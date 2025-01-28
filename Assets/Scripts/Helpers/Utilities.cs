@@ -8,18 +8,26 @@ namespace Helpers
     public class Utilities : MonoBehaviour
     {
         [SerializeField] private List<CardSpriteContainer> cardSprites;
+        [SerializeField] private List<CardConfig> rewardedCards;
 
         private static Dictionary<CardSuit, CardSpriteContainer> _cardsDictionary;
+        private static List<CardConfig> _rewardedCards;
 
         private void Start()
         {
             _cardsDictionary = new Dictionary<CardSuit, CardSpriteContainer>();
+            _rewardedCards = new List<CardConfig>();
             foreach (var container in cardSprites)
             {
                 if (!_cardsDictionary.TryAdd(container.suit, container))
                 {
                     Debug.LogWarning($"Duplicate entry for suit: {container.suit}. Only the first entry will be used.");
                 }
+            }
+
+            foreach (var rewarded in rewardedCards)
+            {
+                _rewardedCards.Add(rewarded);
             }
         }
         
@@ -49,6 +57,19 @@ namespace Helpers
             Debug.LogError($"Sprite not found for suit: {suit}, value: {value}");
             return null;
         }
+
+        public static int GetCardPoint(CardConfig config)
+        {
+            foreach (var rewarded in _rewardedCards)
+            {
+                if (config.cardSuit == rewarded.cardSuit && config.cardValue == rewarded.cardValue)
+                {
+                    return rewarded.point;
+                }
+            }
+
+            return 0;
+        }
     }
 
     [Serializable]
@@ -65,11 +86,13 @@ namespace Helpers
         public CardValue value;
         public Sprite sprite;
     }
-
+    
+    [Serializable]
     public struct CardConfig
     {
         public CardSuit cardSuit;
         public CardValue cardValue;
+        public int point;
     }
 
     public enum CardSuit

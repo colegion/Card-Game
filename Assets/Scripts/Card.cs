@@ -14,12 +14,14 @@ public class Card : MonoBehaviour, IPoolable
     [SerializeField] private Collider cardCollider;
     
     private CardConfig? _cardConfig;
+    private int _points;
     
     public void ConfigureSelf(CardConfig config)
     {
         _cardConfig = config;
         cardFace.sprite = Utilities.GetCardSprite(_cardConfig.Value.cardSuit, _cardConfig.Value.cardValue);
         cardValue.text = $"{_cardConfig.Value.cardValue}";
+        _points = Utilities.GetCardPoint(config);
     }
     
     public void OnPooled()
@@ -39,5 +41,6 @@ public class Card : MonoBehaviour, IPoolable
         _cardConfig = null;
         cardFace.sprite = null;
         cardValue.text = "";
+        _points = 0;
     }
 }
