@@ -97,6 +97,7 @@ namespace Helpers
 
     public enum CardSuit
     {
+        Null,
         Clubs,
         Diamonds,
         Hearts,
@@ -105,6 +106,7 @@ namespace Helpers
 
     public enum CardValue
     {
+        Null,
         One,
         Two,
         Three,

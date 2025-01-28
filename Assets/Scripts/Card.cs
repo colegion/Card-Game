@@ -13,15 +13,21 @@ public class Card : MonoBehaviour, IPoolable
     [SerializeField] private TextMesh cardValue;
     [SerializeField] private Collider2D cardCollider;
     
-    private CardConfig? _cardConfig;
+    private CardConfig _cardConfig;
     private int _points;
     
-    public void ConfigureSelf(CardConfig config)
+    public void ConfigureSelf(CardConfig config, bool isFaceDown)
     {
         _cardConfig = config;
-        cardFace.sprite = Utilities.GetCardSprite(_cardConfig.Value.cardSuit, _cardConfig.Value.cardValue);
-        cardValue.text = $"{_cardConfig.Value.cardValue}";
+        if(!isFaceDown) cardFace.sprite = Utilities.GetCardSprite(_cardConfig.cardSuit, _cardConfig.cardValue);
+        cardValue.text = $"{_cardConfig.cardValue}";
         _points = Utilities.GetCardPoint(config);
+    }
+
+    public CardConfig OnCardCollected()
+    {
+        _cardConfig.point = _points;
+        return _cardConfig;
     }
     
     public void OnPooled()
@@ -38,9 +44,11 @@ public class Card : MonoBehaviour, IPoolable
 
     public void OnReturnPool()
     {
-        _cardConfig = null;
+        _cardConfig.cardSuit = CardSuit.Null;
+        _cardConfig.cardValue = CardValue.Null;
+        _cardConfig.point = 0;
+        _points = 0;
         cardFace.sprite = null;
         cardValue.text = "";
-        _points = 0;
     }
 }

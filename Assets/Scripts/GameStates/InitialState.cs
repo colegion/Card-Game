@@ -10,6 +10,8 @@ public class InitialState : IGameState
         throw new System.NotImplementedException();
     }
 
+    
+
     public void ExitState()
     {
         throw new System.NotImplementedException();

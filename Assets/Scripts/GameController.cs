@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using Helpers;
 using Interfaces;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] private PoolController poolController;
+
+    public int UserCount = 2;
 
     private List<CardConfig> _deck;
 
@@ -61,8 +65,13 @@ public class GameController : MonoBehaviour
         _deck = new List<CardConfig>();
         foreach (CardSuit suit in Enum.GetValues(typeof(CardSuit)))
         {
+            if(suit == CardSuit.Null) continue;
             foreach (CardValue value in Enum.GetValues(typeof(CardValue)))
             {
+                if (value == CardValue.Null) continue;
+                {
+                    
+                }
                 var tempConfig = new CardConfig()
                 {
                     cardSuit = suit,
@@ -73,6 +82,23 @@ public class GameController : MonoBehaviour
                 _deck.Shuffle();
             }
         }
+    }
+
+    public Card GetCard()
+    {
+        return (Card)poolController.GetPooledObject(PoolableTypes.Card);
+    }
+
+    public CardConfig GetRandomConfig()
+    {
+        var randomIndex = Random.Range(0, _deck.Count);
+        var tempConfig = _deck[randomIndex];
+        return tempConfig;
+    }
+
+    public void RemoveCardFromDeck(CardConfig config)
+    {
+        _deck.Remove(config);
     }
     
     public void ChangeState(IGameState newState)
