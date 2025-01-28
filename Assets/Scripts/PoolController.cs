@@ -8,10 +8,10 @@ public class PoolController : MonoBehaviour
     private const int DefaultPoolAmount = 60;
     private GamePool _gamePool;
 
-    private void Awake()
+    public void Initialize()
     {
         _gamePool = new GamePool();
-        InitializePool();
+        InitializePool();   
     }
 
     private void InitializePool()

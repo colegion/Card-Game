@@ -123,6 +123,5 @@ namespace Helpers
     public enum PoolableTypes
     {
         Card,
-        
     }
 }
