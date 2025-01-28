@@ -66,6 +66,12 @@ namespace Helpers
         public Sprite sprite;
     }
 
+    public struct CardConfig
+    {
+        public CardSuit cardSuit;
+        public CardValue cardValue;
+    }
+
     public enum CardSuit
     {
         Clubs,
@@ -89,5 +95,11 @@ namespace Helpers
         Jack,
         Queen,
         King
+    }
+
+    public enum PoolableTypes
+    {
+        Card,
+        
     }
 }

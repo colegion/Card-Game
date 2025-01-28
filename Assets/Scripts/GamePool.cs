@@ -1,0 +1,49 @@
+using System.Collections.Generic;
+using Helpers;
+using UnityEngine;
+using IPoolable = Interfaces.IPoolable;
+
+public class GamePool
+{
+    private readonly Dictionary<PoolableTypes, Queue<IPoolable>> _pools;
+
+    public GamePool()
+    {
+        _pools = new Dictionary<PoolableTypes, Queue<IPoolable>>();
+    }
+
+    public void PoolObjects(PoolableTypes type, IPoolable poolObject, int amount)
+    {
+        if (!_pools.ContainsKey(type))
+            _pools[type] = new Queue<IPoolable>();
+
+        for (int i = 0; i < amount; i++)
+        {
+            var instance = Object.Instantiate((poolObject as MonoBehaviour)?.gameObject).GetComponent<IPoolable>();
+            instance.OnPooled();
+            _pools[type].Enqueue(instance);
+        }
+    }
+
+    public IPoolable FetchFromPool(PoolableTypes type)
+    {
+        if (_pools.ContainsKey(type) && _pools[type].Count > 0)
+        {
+            var poolable = _pools[type].Dequeue();
+            poolable.OnFetchFromPool();
+            return poolable;
+        }
+
+        Debug.LogWarning($"No objects of type {type} available in the pool. Consider pre-pooling more objects.");
+        return null;
+    }
+
+    public void ReturnToPool(PoolableTypes type, IPoolable poolObject)
+    {
+        if (!_pools.ContainsKey(type))
+            _pools[type] = new Queue<IPoolable>();
+
+        poolObject.OnReturnPool();
+        _pools[type].Enqueue(poolObject);
+    }
+}

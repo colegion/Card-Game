@@ -1,0 +1,48 @@
+using System;
+using Helpers;
+using UnityEngine;
+using IPoolable = Interfaces.IPoolable;
+
+public class PoolController : MonoBehaviour
+{
+    private const int DefaultPoolAmount = 60;
+    private GamePool _gamePool;
+
+    private void Awake()
+    {
+        _gamePool = new GamePool();
+        InitializePool();
+    }
+
+    private void InitializePool()
+    {
+        foreach (PoolableTypes type in Enum.GetValues(typeof(PoolableTypes)))
+        {
+            var prefab = Resources.Load<GameObject>($"Prefabs/{type}");
+            if (prefab == null)
+            {
+                Debug.LogError($"Prefab for {type} not found in Resources/Prefabs!");
+                continue;
+            }
+
+            var poolable = prefab.GetComponent<IPoolable>();
+            if (poolable == null)
+            {
+                Debug.LogError($"Prefab for {type} does not implement IPoolable!");
+                continue;
+            }
+
+            _gamePool.PoolObjects(type, poolable, DefaultPoolAmount);
+        }
+    }
+
+    public IPoolable GetPooledObject(PoolableTypes type)
+    {
+        return _gamePool.FetchFromPool(type);
+    }
+
+    public void ReturnPooledObject(PoolableTypes type, IPoolable poolObject)
+    {
+        _gamePool.ReturnToPool(type, poolObject);
+    }
+}
