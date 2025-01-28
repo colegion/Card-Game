@@ -11,6 +11,7 @@ public class Card : MonoBehaviour, IPoolable
     [SerializeField] private GameObject visuals;
     [SerializeField] private SpriteRenderer cardFace;
     [SerializeField] private TextMesh cardValue;
+    [SerializeField] private Collider cardCollider;
     
     private CardConfig? _cardConfig;
     
@@ -24,11 +25,13 @@ public class Card : MonoBehaviour, IPoolable
     public void OnPooled()
     {
         visuals.gameObject.SetActive(false);
+        cardCollider.enabled = false;
     }
 
     public void OnFetchFromPool()
     {
         visuals.gameObject.SetActive(true);
+        cardCollider.enabled = true;
     }
 
     public void OnReturnPool()
