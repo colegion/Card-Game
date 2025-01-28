@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Helpers;
 using Interfaces;
 using UnityEngine;
 
@@ -7,11 +8,15 @@ public class BotTurnState : IGameState
 {
     public void EnterState()
     {
-        throw new System.NotImplementedException();
+        var bot = GameController.Instance.GetUser(true);
+        bot.InjectUserState(this);
+        bot.OnTurnStart();
     }
 
     public void ExitState()
     {
-        throw new System.NotImplementedException();
+        var outcomeState = GameController.Instance.GetStateByType(GameStateTypes.Outcome);
+        GameController.Instance.SetLastCallerType(GameStateTypes.BotTurn);
+        GameController.Instance.ChangeState(outcomeState);
     }
 }

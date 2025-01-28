@@ -7,9 +7,12 @@ using UnityEngine;
 public abstract class User : MonoBehaviour
 {
     [SerializeField] protected CardAnimator cardAnimator;
+    [SerializeField] private Transform cardTarget;
     
     protected List<Card> Cards = new List<Card>();
     protected IGameState UserState;
+    
+    private List<CardConfig> _collectedCards = new List<CardConfig>();
 
     public void InjectUserState(IGameState state)
     {
@@ -21,7 +24,26 @@ public abstract class User : MonoBehaviour
     {
         Cards = cards;
     }
+
+    public void CollectCards(List<Card> cards)
+    {
+        foreach (var card in cards)
+        {
+            _collectedCards.Add(card.GetConfig());
+        }
+        
+        cardAnimator.MoveCardsToTarget(cards, transform);
+    }
+    
+    public virtual void OnCardPlayed(Card card)
+    {
+        Cards.Remove(card);
+        cardAnimator.AnimateSelectedCard(card, cardTarget, () =>
+        {
+            GameController.Instance.AppendCardsOnTable(card);
+            UserState.ExitState();
+        });
+    }
     
     public abstract void OnTurnStart();
-    public abstract void OnCardPlayed(Card card);
 }

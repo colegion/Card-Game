@@ -26,6 +26,8 @@ public class CardDistributionState : IGameState
         {
             DistributeUserCards();
         }
+
+        ExitState();
     }
 
     private void DistributeTableCards()
@@ -36,13 +38,13 @@ public class CardDistributionState : IGameState
             var card = GameController.Instance.GetCard();
             card.ConfigureSelf(config, i < CardAmount - 1);
             GameController.Instance.RemoveCardFromDeck(config);
-            GameController.Instance.AppendCardsOnTable(config);
+            GameController.Instance.AppendCardsOnTable(card);
         }
     }
 
     private void DistributeUserCards()
     {
-        var users = GameController.Instance.GetUsers();
+        var users = GameController.Instance.GetAllUsers();
 
         foreach (var user in users)
         {

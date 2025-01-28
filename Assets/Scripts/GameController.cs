@@ -10,8 +10,7 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] private PoolController poolController;
     [SerializeField] private CardTapHandler cardTapHandler;
-    [SerializeField] private Player player;
-    [SerializeField] private Bot bot;
+    [SerializeField] private CardAnimator cardAnimator;
     [SerializeField] private List<User> users;
     
     private static GameController _instance;
@@ -20,7 +19,8 @@ public class GameController : MonoBehaviour
     private IGameState _currentState;
     
     private List<CardConfig> _deck;
-    private List<CardConfig> _cardsOnTable = new List<CardConfig>();
+    private List<Card> _cardsOnTable = new List<Card>();
+    private GameStateTypes _lastOutcomeCallerType;
 
     public static GameController Instance
     {
@@ -48,7 +48,7 @@ public class GameController : MonoBehaviour
 
         poolController.Initialize();
         cardTapHandler.Initialize();
-        cardTapHandler.InjectPlayer(player);
+        cardTapHandler.InjectPlayer(GetUser(false) as Player);
         BuildDeck();
         
         _gameStates = new Dictionary<GameStateTypes, IGameState>
@@ -60,7 +60,6 @@ public class GameController : MonoBehaviour
         };
 
         _currentState = _gameStates[GameStateTypes.CardDistribution];
-        _currentState.EnterState();
         _currentState.EnterState();
     }
 
@@ -91,6 +90,11 @@ public class GameController : MonoBehaviour
         return (Card)poolController.GetPooledObject(PoolableTypes.Card);
     }
 
+    public void ReturnObjectToPool(IPoolable objectToReturn)
+    {
+        poolController.ReturnPooledObject(objectToReturn);
+    }
+
     public CardConfig GetRandomConfig()
     {
         var randomIndex = Random.Range(0, _deck.Count);
@@ -98,16 +102,26 @@ public class GameController : MonoBehaviour
         return tempConfig;
     }
 
-    public void AppendCardsOnTable(CardConfig config)
+    public void AppendCardsOnTable(Card card)
     {
-        if (_cardsOnTable.Contains(config))
+        if (_cardsOnTable.Contains(card))
         {
             Debug.LogError("Duplicate card!");
         }
         else
         {
-            _cardsOnTable.Add(config);
+            _cardsOnTable.Add(card);
         }
+    }
+
+    public List<Card> GetCardsOnTable()
+    {
+        return _cardsOnTable;
+    }
+
+    public void ClearOnTableCards()
+    {
+        _cardsOnTable.Clear();
     }
 
     public void RemoveCardFromDeck(CardConfig config)
@@ -117,16 +131,38 @@ public class GameController : MonoBehaviour
     
     public void ChangeState(IGameState newState)
     {
-        _currentState.ExitState();
+        //_currentState.ExitState();
         _currentState = newState;
         _currentState.EnterState();
     }
 
-    public List<User> GetUsers()
+    public List<User> GetAllUsers()
     {
         return users;
     }
 
+    public User GetUser(bool isBot)
+    {
+        if (isBot)
+        {
+            return users.Find(u => u is Bot);
+        }
+        else
+        {
+            return users.Find(u => u is Player);
+        }
+    }
+
+    public void SetLastCallerType(GameStateTypes type)
+    {
+        _lastOutcomeCallerType = type;
+    }
+
+    public GameStateTypes GetLastOutcomeCallerType()
+    {
+        return _lastOutcomeCallerType;
+    } 
+    
     public IGameState GetStateByType(GameStateTypes type)
     {
         return _gameStates[type];

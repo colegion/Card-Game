@@ -41,8 +41,8 @@ public class PoolController : MonoBehaviour
         return _gamePool.FetchFromPool(type);
     }
 
-    public void ReturnPooledObject(PoolableTypes type, IPoolable poolObject)
+    public void ReturnPooledObject(IPoolable poolObject)
     {
-        _gamePool.ReturnToPool(type, poolObject);
+        _gamePool.ReturnToPool(poolObject.GetPoolableType(), poolObject);
     }
 }

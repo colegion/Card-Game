@@ -13,8 +13,11 @@ public class Player : User
         }
     }
 
-    public override void OnCardPlayed(Card card)
+    public void OnTurnEnd()
     {
-        throw new NotImplementedException();
+        foreach (var card in Cards)
+        {
+            card.ToggleInteractable(false);
+        }
     }
 }

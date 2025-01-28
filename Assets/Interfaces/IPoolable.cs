@@ -1,3 +1,5 @@
+using Helpers;
+
 namespace Interfaces
 {
     public interface IPoolable
@@ -5,5 +7,6 @@ namespace Interfaces
         public void OnPooled();
         public void OnFetchFromPool();
         public void OnReturnPool();
+        public PoolableTypes GetPoolableType();
     }
 }

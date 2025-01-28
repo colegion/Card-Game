@@ -33,14 +33,12 @@ namespace Helpers
         
         public static Sprite GetCardSprite(CardSuit suit, CardValue value)
         {
-            if (_cardsDictionary == null || !_cardsDictionary.ContainsKey(suit))
+            if (_cardsDictionary == null || !_cardsDictionary.TryGetValue(suit, out var container))
             {
                 Debug.LogError($"Card suit '{suit}' not found in the dictionary.");
                 return null;
             }
 
-            var container = _cardsDictionary[suit];
-            
             foreach (var faceCard in container.faceCards)
             {
                 if (faceCard.value == value)

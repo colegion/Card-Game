@@ -12,11 +12,6 @@ public class Bot : User
         _currentStrategy.Play();
     }
 
-    public override void OnCardPlayed(Card card)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public List<Card> GetHand()
     {
         return Cards;
