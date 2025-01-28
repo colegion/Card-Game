@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Helpers;
+using Interfaces;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -10,6 +11,13 @@ public class GameController : MonoBehaviour
     private List<CardConfig> _deck;
 
     private static GameController _instance;
+
+    private IGameState _currentState;
+    private InitialState _initialState;
+    private BotTurnState _botState;
+    private PlayerTurnState _playerState;
+    private OutcomeState _outcomeState;
+    private CardDistributionState _cardDistributionState;
 
     public static GameController Instance
     {
@@ -37,6 +45,15 @@ public class GameController : MonoBehaviour
         
         poolController.Initialize();
         BuildDeck();
+        
+        _initialState = new InitialState();
+        _botState = new BotTurnState();
+        _playerState = new PlayerTurnState();
+        _outcomeState = new OutcomeState();
+        _cardDistributionState = new CardDistributionState();
+        
+        _currentState = _initialState;
+        _currentState.EnterState();
     }
 
     private void BuildDeck()
@@ -56,5 +73,12 @@ public class GameController : MonoBehaviour
                 _deck.Shuffle();
             }
         }
+    }
+    
+    public void ChangeState(IGameState newState)
+    {
+        _currentState.ExitState();
+        _currentState = newState;
+        _currentState.EnterState();
     }
 }

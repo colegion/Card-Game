@@ -11,7 +11,7 @@ public class Card : MonoBehaviour, IPoolable
     [SerializeField] private GameObject visuals;
     [SerializeField] private SpriteRenderer cardFace;
     [SerializeField] private TextMesh cardValue;
-    [SerializeField] private Collider cardCollider;
+    [SerializeField] private Collider2D cardCollider;
     
     private CardConfig? _cardConfig;
     private int _points;
