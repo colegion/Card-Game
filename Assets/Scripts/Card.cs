@@ -19,8 +19,11 @@ public class Card : MonoBehaviour, IPoolable
     public void ConfigureSelf(CardConfig config, bool isFaceDown)
     {
         _cardConfig = config;
-        if(!isFaceDown) cardFace.sprite = Utilities.GetCardSprite(_cardConfig.cardSuit, _cardConfig.cardValue);
-        cardValue.text = $"{_cardConfig.cardValue}";
+        if (!isFaceDown)
+        {
+            cardFace.sprite = Utilities.GetCardSprite(_cardConfig.cardSuit, _cardConfig.cardValue);
+            cardValue.text = $"{_cardConfig.cardValue}";
+        }
         _points = Utilities.GetCardPoint(config);
     }
 
@@ -39,7 +42,6 @@ public class Card : MonoBehaviour, IPoolable
     public void OnFetchFromPool()
     {
         visuals.gameObject.SetActive(true);
-        cardCollider.enabled = true;
     }
 
     public void OnReturnPool()
@@ -50,5 +52,10 @@ public class Card : MonoBehaviour, IPoolable
         _points = 0;
         cardFace.sprite = null;
         cardValue.text = "";
+    }
+
+    public void ToggleInteractable(bool toggle)
+    {
+        cardCollider.enabled = toggle;
     }
 }

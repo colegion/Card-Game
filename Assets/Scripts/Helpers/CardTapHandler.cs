@@ -8,10 +8,16 @@ namespace Helpers
         [SerializeField] private Camera mainCamera;
 
         private GameInputActions _inputActions;
+        private Player _player;
 
-        private void Awake()
+        public void Initialize()
         {
             _inputActions = new GameInputActions();
+        }
+
+        public void InjectPlayer(Player player)
+        {
+            _player = player;
         }
 
         private void OnEnable()
@@ -42,7 +48,7 @@ namespace Helpers
                 if (card != null)
                 {
                     Debug.Log($"Tapped on card: {card.name}");
-                    //card.OnTapped(); // Call a method to handle the card tap
+                    _player.OnCardPlayed(card);
                 }
             }
         }

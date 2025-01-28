@@ -9,7 +9,8 @@ using Random = UnityEngine.Random;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private PoolController poolController;
-
+    [SerializeField] private CardTapHandler cardTapHandler;
+    [SerializeField] private Player player;
     public int UserCount = 2;
 
     private List<CardConfig> _deck;
@@ -46,8 +47,10 @@ public class GameController : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+
         poolController.Initialize();
+        cardTapHandler.Initialize();
+        cardTapHandler.InjectPlayer(player);
         BuildDeck();
         
         _initialState = new InitialState();
@@ -69,9 +72,6 @@ public class GameController : MonoBehaviour
             foreach (CardValue value in Enum.GetValues(typeof(CardValue)))
             {
                 if (value == CardValue.Null) continue;
-                {
-                    
-                }
                 var tempConfig = new CardConfig()
                 {
                     cardSuit = suit,
@@ -79,9 +79,10 @@ public class GameController : MonoBehaviour
                 };
                 
                 _deck.Add(tempConfig);
-                _deck.Shuffle();
             }
         }
+        
+        _deck.Shuffle();
     }
 
     public Card GetCard()
