@@ -141,4 +141,13 @@ namespace Helpers
     {
         Card,
     }
+
+    public enum GameStateTypes
+    {
+        CardDistribution,
+        PlayerTurn,
+        BotTurn,
+        Outcome,
+        
+    }
 }

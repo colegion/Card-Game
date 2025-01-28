@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Helpers;
 using Interfaces;
 using UnityEngine;
 
@@ -10,19 +11,20 @@ public class CardDistributionState : IGameState
     
     public void EnterState()
     {
-        throw new System.NotImplementedException();
+        DistributeCards();
     }
     
     private void DistributeCards()
     {
         if (!_initialDistributionCompleted)
         {
-            
+            DistributeTableCards();
+            DistributeUserCards();
             _initialDistributionCompleted = true;
         }
         else
         {
-            
+            DistributeUserCards();
         }
     }
 
@@ -33,22 +35,35 @@ public class CardDistributionState : IGameState
             var config = GameController.Instance.GetRandomConfig();
             var card = GameController.Instance.GetCard();
             card.ConfigureSelf(config, i < CardAmount - 1);
+            GameController.Instance.RemoveCardFromDeck(config);
+            GameController.Instance.AppendCardsOnTable(config);
         }
     }
 
     private void DistributeUserCards()
     {
-        for (int i = 0; i < GameController.Instance.UserCount; i++)
+        var users = GameController.Instance.GetUsers();
+
+        foreach (var user in users)
         {
-            for (int j = 0; j < CardAmount; j++)
+            var faceDown = user is not Player;
+            var cards = new List<Card>();
+            for (int i = 0; i < CardAmount; i++) 
             {
-                
+                var config = GameController.Instance.GetRandomConfig();
+                var card = GameController.Instance.GetCard();
+                card.ConfigureSelf(config, faceDown);
+                GameController.Instance.RemoveCardFromDeck(config);
+                cards.Add(card);
             }
+            
+            user.SetCards(cards);
         }
     }
 
     public void ExitState()
     {
-        throw new System.NotImplementedException();
+        var playerTurn = GameController.Instance.GetStateByType(GameStateTypes.PlayerTurn);
+        GameController.Instance.ChangeState(playerTurn);
     }
 }

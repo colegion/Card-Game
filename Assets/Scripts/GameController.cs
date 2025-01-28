@@ -11,18 +11,16 @@ public class GameController : MonoBehaviour
     [SerializeField] private PoolController poolController;
     [SerializeField] private CardTapHandler cardTapHandler;
     [SerializeField] private Player player;
-    public int UserCount = 2;
-
-    private List<CardConfig> _deck;
-
+    [SerializeField] private Bot bot;
+    [SerializeField] private List<User> users;
+    
     private static GameController _instance;
+    private static Dictionary<GameStateTypes, IGameState> _gameStates = new Dictionary<GameStateTypes, IGameState>();
 
     private IGameState _currentState;
-    private InitialState _initialState;
-    private BotTurnState _botState;
-    private PlayerTurnState _playerState;
-    private OutcomeState _outcomeState;
-    private CardDistributionState _cardDistributionState;
+    
+    private List<CardConfig> _deck;
+    private List<CardConfig> _cardsOnTable = new List<CardConfig>();
 
     public static GameController Instance
     {
@@ -53,13 +51,16 @@ public class GameController : MonoBehaviour
         cardTapHandler.InjectPlayer(player);
         BuildDeck();
         
-        _initialState = new InitialState();
-        _botState = new BotTurnState();
-        _playerState = new PlayerTurnState();
-        _outcomeState = new OutcomeState();
-        _cardDistributionState = new CardDistributionState();
-        
-        _currentState = _initialState;
+        _gameStates = new Dictionary<GameStateTypes, IGameState>
+        {
+            { GameStateTypes.CardDistribution, new CardDistributionState() },
+            { GameStateTypes.BotTurn, new BotTurnState() },
+            { GameStateTypes.PlayerTurn, new PlayerTurnState() },
+            { GameStateTypes.Outcome, new OutcomeState() }
+        };
+
+        _currentState = _gameStates[GameStateTypes.CardDistribution];
+        _currentState.EnterState();
         _currentState.EnterState();
     }
 
@@ -97,6 +98,18 @@ public class GameController : MonoBehaviour
         return tempConfig;
     }
 
+    public void AppendCardsOnTable(CardConfig config)
+    {
+        if (_cardsOnTable.Contains(config))
+        {
+            Debug.LogError("Duplicate card!");
+        }
+        else
+        {
+            _cardsOnTable.Add(config);
+        }
+    }
+
     public void RemoveCardFromDeck(CardConfig config)
     {
         _deck.Remove(config);
@@ -107,5 +120,15 @@ public class GameController : MonoBehaviour
         _currentState.ExitState();
         _currentState = newState;
         _currentState.EnterState();
+    }
+
+    public List<User> GetUsers()
+    {
+        return users;
+    }
+
+    public IGameState GetStateByType(GameStateTypes type)
+    {
+        return _gameStates[type];
     }
 }
