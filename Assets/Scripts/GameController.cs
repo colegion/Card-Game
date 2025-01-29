@@ -46,7 +46,10 @@ public class GameController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
+    private void Start()
+    {
         poolController.Initialize();
         cardTapHandler.Initialize();
         cardTapHandler.InjectPlayer(GetUser(false) as Player);
@@ -113,7 +116,7 @@ public class GameController : MonoBehaviour
         else
         {
             _cardsOnTable.Add(card);
-            cardAnimator.AnimateSelectedCard(card, tableCenter, () =>
+            cardAnimator.AnimateSelectedCard(card, tableCenter, false, () =>
             {
                 
             });

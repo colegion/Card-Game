@@ -7,9 +7,9 @@ namespace Helpers
 {
     public class CardAnimator : MonoBehaviour
     {
-        public void AnimateSelectedCard(Card card, Transform cardTarget, Action onComplete)
+        public void AnimateSelectedCard(Card card, Transform cardTarget, bool forceDisable, Action onComplete)
         {
-            card.DisableBackground();
+            if(forceDisable) card.DisableBackground();
             card.transform.DOMove(cardTarget.position, 0.3f).SetEase(Ease.Linear).OnComplete(() =>
             {
                 onComplete?.Invoke();

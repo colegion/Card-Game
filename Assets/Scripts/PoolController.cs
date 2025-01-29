@@ -32,7 +32,7 @@ public class PoolController : MonoBehaviour
                 continue;
             }
 
-            _gamePool.PoolObjects(type, poolable, DefaultPoolAmount);
+            _gamePool.PoolObjects(type, poolable, DefaultPoolAmount, transform);
         }
     }
 

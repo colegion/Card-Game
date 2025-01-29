@@ -12,8 +12,8 @@ namespace Helpers
 
         private static Dictionary<CardSuit, CardSpriteContainer> _cardsDictionary;
         private static List<CardConfig> _rewardedCards;
-
-        private void Start()
+        
+        private void Awake()
         {
             _cardsDictionary = new Dictionary<CardSuit, CardSpriteContainer>();
             _rewardedCards = new List<CardConfig>();

@@ -7,14 +7,14 @@ public class GamePool
 {
     private readonly Dictionary<PoolableTypes, Queue<IPoolable>> _pools = new();
 
-    public void PoolObjects(PoolableTypes type, IPoolable poolObject, int amount)
+    public void PoolObjects(PoolableTypes type, IPoolable poolObject, int amount, Transform parent)
     {
         if (!_pools.ContainsKey(type))
             _pools[type] = new Queue<IPoolable>();
 
         for (int i = 0; i < amount; i++)
         {
-            var instance = Object.Instantiate((poolObject as MonoBehaviour)?.gameObject).GetComponent<IPoolable>();
+            var instance = Object.Instantiate((poolObject as MonoBehaviour)?.gameObject, parent).GetComponent<IPoolable>();
             instance.OnPooled();
             _pools[type].Enqueue(instance);
         }

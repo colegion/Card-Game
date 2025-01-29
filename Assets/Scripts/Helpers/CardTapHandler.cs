@@ -10,12 +10,6 @@ namespace Helpers
         private GameInputActions _inputActions;
         private Player _player;
 
-        private void OnEnable()
-        {
-            _inputActions.Enable();
-            _inputActions.Gameplay.Tap.performed += OnTapPerformed;
-        }
-
         private void OnDisable()
         {
             _inputActions.Gameplay.Tap.performed -= OnTapPerformed;
@@ -25,6 +19,8 @@ namespace Helpers
         public void Initialize()
         {
             _inputActions = new GameInputActions();
+            _inputActions.Enable();
+            _inputActions.Gameplay.Tap.performed += OnTapPerformed;
         }
 
         public void InjectPlayer(Player player)

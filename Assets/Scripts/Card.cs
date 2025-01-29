@@ -21,7 +21,7 @@ public class Card : MonoBehaviour, IPoolable
     public void ConfigureSelf(CardConfig config, bool isFaceDown)
     {
         _cardConfig = config;
-        if (!isFaceDown)
+        if (isFaceDown)
         {
             cardBg.gameObject.SetActive(true);
         }
@@ -31,7 +31,7 @@ public class Card : MonoBehaviour, IPoolable
         }
         
         cardFace.sprite = Utilities.GetCardSprite(_cardConfig.cardSuit, _cardConfig.cardValue);
-        cardValue.text = $"{_cardConfig.cardValue}";
+        cardValue.text = (int)_cardConfig.cardValue < (int)CardValue.Jack ? $"{(int)_cardConfig.cardValue}" : "";
         _points = Utilities.GetCardPoint(config);
     }
 

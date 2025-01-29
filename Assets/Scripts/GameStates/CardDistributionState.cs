@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class CardDistributionState : IGameState
 {
+    private const float CardAnimationDelay = 0.1f;
     private const int CardAmount = 4;
     private bool _initialDistributionCompleted;
     
@@ -28,18 +29,22 @@ public class CardDistributionState : IGameState
             DistributeUserCards();
         }
 
-        DOVirtual.DelayedCall(1.3f, ExitState); 
+        DOVirtual.DelayedCall(2.6f, ExitState); 
     }
 
     private void DistributeTableCards()
     {
+        Sequence sequence = DOTween.Sequence();
+
         for (int i = 0; i < CardAmount; i++)
         {
             var config = GameController.Instance.GetRandomConfig();
             var card = GameController.Instance.GetCard();
             card.ConfigureSelf(config, i < CardAmount - 1);
             GameController.Instance.RemoveCardFromDeck(config);
-            GameController.Instance.AppendCardsOnTable(card);
+
+            sequence.AppendInterval(CardAnimationDelay)
+                .AppendCallback(() => GameController.Instance.AppendCardsOnTable(card));
         }
     }
 
