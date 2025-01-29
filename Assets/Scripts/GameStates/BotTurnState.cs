@@ -4,19 +4,8 @@ using Helpers;
 using Interfaces;
 using UnityEngine;
 
-public class BotTurnState : IGameState
+public class BotTurnState : TurnStateBase
 {
-    public void EnterState()
-    {
-        var bot = GameController.Instance.GetUser(true);
-        bot.InjectUserState(this);
-        bot.OnTurnStart();
-    }
-
-    public void ExitState()
-    {
-        var outcomeState = GameController.Instance.GetStateByType(GameStateTypes.Outcome);
-        GameController.Instance.SetLastCallerType(GameStateTypes.BotTurn);
-        GameController.Instance.ChangeState(outcomeState);
-    }
+    protected override User GetUser() => GameController.Instance.GetUser(true);
+    protected override GameStateTypes GetGameStateType() => GameStateTypes.BotTurn;
 }

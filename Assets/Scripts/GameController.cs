@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private PoolController poolController;
     [SerializeField] private CardTapHandler cardTapHandler;
     [SerializeField] private CardAnimator cardAnimator;
+    [SerializeField] private Transform tableCenter;
     [SerializeField] private List<User> users;
     
     private static GameController _instance;
@@ -111,6 +112,10 @@ public class GameController : MonoBehaviour
         else
         {
             _cardsOnTable.Add(card);
+            cardAnimator.AnimateSelectedCard(card, tableCenter, () =>
+            {
+                
+            });
         }
     }
 
@@ -161,7 +166,7 @@ public class GameController : MonoBehaviour
     public GameStateTypes GetLastOutcomeCallerType()
     {
         return _lastOutcomeCallerType;
-    } 
+    }
     
     public IGameState GetStateByType(GameStateTypes type)
     {

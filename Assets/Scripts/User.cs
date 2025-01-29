@@ -34,6 +34,11 @@ public abstract class User : MonoBehaviour
         
         cardAnimator.MoveCardsToTarget(cards, transform);
     }
+
+    public bool IsHandEmpty()
+    {
+        return Cards.Count == 0;
+    }
     
     public virtual void OnCardPlayed(Card card)
     {

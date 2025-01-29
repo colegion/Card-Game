@@ -4,23 +4,16 @@ using Helpers;
 using Interfaces;
 using UnityEngine;
 
-public class PlayerTurnState : IGameState
+public class PlayerTurnState : TurnStateBase
 {
-    private Player _player;
-    public void EnterState()
+    protected override User GetUser() => GameController.Instance.GetUser(false);
+    protected override GameStateTypes GetGameStateType() => GameStateTypes.PlayerTurn;
+    
+    public override void ExitState()
     {
-        if(_player == null)
-            _player = GameController.Instance.GetUser(false) as Player;
-        
-        _player.InjectUserState(this);
-        _player.OnTurnStart();
-    }
-
-    public void ExitState()
-    {
-        _player.OnTurnEnd();
+        (User as Player)?.OnTurnEnd();
         var outcomeState = GameController.Instance.GetStateByType(GameStateTypes.Outcome);
-        GameController.Instance.SetLastCallerType(GameStateTypes.PlayerTurn);
+        GameController.Instance.SetLastCallerType(GetGameStateType());
         GameController.Instance.ChangeState(outcomeState);
     }
 }
