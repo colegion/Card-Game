@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private PoolController poolController;
     [SerializeField] private CardTapHandler cardTapHandler;
     [SerializeField] private CardAnimator cardAnimator;
-    [SerializeField] private Transform tableCenter;
+    [SerializeField] private Table table;
     [SerializeField] private List<User> users;
     
     private static GameController _instance;
@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
         else
         {
             _cardsOnTable.Add(card);
-            cardAnimator.AnimateSelectedCard(card, tableCenter, false, () =>
+            cardAnimator.AnimateSelectedCard(card, table.GetCardTarget(), false, () =>
             {
                 
             });
@@ -130,6 +130,7 @@ public class GameController : MonoBehaviour
 
     public void ClearOnTableCards()
     {
+        table.ResetTransformCounter();
         _cardsOnTable.Clear();
     }
 
@@ -140,7 +141,6 @@ public class GameController : MonoBehaviour
     
     public void ChangeState(IGameState newState)
     {
-        //_currentState.ExitState();
         _currentState = newState;
         _currentState.EnterState();
     }

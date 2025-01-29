@@ -43,7 +43,7 @@ public abstract class User : MonoBehaviour
     public virtual void OnCardPlayed(Card card)
     {
         Cards.Remove(card);
-        cardAnimator.AnimateSelectedCard(card, cardTarget, true,() =>
+        cardAnimator.AnimateSelectedCard(card, cardTarget.position, true,() =>
         {
             GameController.Instance.AppendCardsOnTable(card);
             UserState.ExitState();
