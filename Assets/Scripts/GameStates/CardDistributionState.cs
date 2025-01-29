@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Helpers;
 using Interfaces;
 using UnityEngine;
@@ -27,7 +28,7 @@ public class CardDistributionState : IGameState
             DistributeUserCards();
         }
 
-        ExitState();
+        DOVirtual.DelayedCall(1.3f, ExitState); 
     }
 
     private void DistributeTableCards()

@@ -10,16 +10,6 @@ namespace Helpers
         private GameInputActions _inputActions;
         private Player _player;
 
-        public void Initialize()
-        {
-            _inputActions = new GameInputActions();
-        }
-
-        public void InjectPlayer(Player player)
-        {
-            _player = player;
-        }
-
         private void OnEnable()
         {
             _inputActions.Enable();
@@ -30,6 +20,16 @@ namespace Helpers
         {
             _inputActions.Gameplay.Tap.performed -= OnTapPerformed;
             _inputActions.Disable();
+        }
+        
+        public void Initialize()
+        {
+            _inputActions = new GameInputActions();
+        }
+
+        public void InjectPlayer(Player player)
+        {
+            _player = player;
         }
 
         private void OnTapPerformed(InputAction.CallbackContext context)

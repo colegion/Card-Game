@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
         poolController.Initialize();
         cardTapHandler.Initialize();
         cardTapHandler.InjectPlayer(GetUser(false) as Player);
+        
         BuildDeck();
         
         _gameStates = new Dictionary<GameStateTypes, IGameState>

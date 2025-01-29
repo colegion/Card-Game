@@ -5,12 +5,7 @@ using IPoolable = Interfaces.IPoolable;
 
 public class GamePool
 {
-    private readonly Dictionary<PoolableTypes, Queue<IPoolable>> _pools;
-
-    public GamePool()
-    {
-        _pools = new Dictionary<PoolableTypes, Queue<IPoolable>>();
-    }
+    private readonly Dictionary<PoolableTypes, Queue<IPoolable>> _pools = new();
 
     public void PoolObjects(PoolableTypes type, IPoolable poolObject, int amount)
     {
