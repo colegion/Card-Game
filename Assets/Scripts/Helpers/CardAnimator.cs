@@ -16,7 +16,7 @@ namespace Helpers
             });
         }
 
-        public void MoveCardsToTarget(List<Card> cards, Transform target)
+        public void OnCardsCollected(List<Card> cards, Transform target)
         {
             Sequence sequence = DOTween.Sequence();
 

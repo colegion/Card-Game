@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Helpers;
 using Interfaces;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine;
 public abstract class User : MonoBehaviour
 {
     [SerializeField] protected CardAnimator cardAnimator;
+    [SerializeField] private Hand hand;
     [SerializeField] private Transform cardTarget;
     
     protected List<Card> Cards = new List<Card>();
@@ -23,6 +25,17 @@ public abstract class User : MonoBehaviour
     public void SetCards(List<Card> cards)
     {
         Cards = cards;
+        ReceiveCards();
+    }
+
+    private void ReceiveCards()
+    {
+        foreach (var card in Cards)
+        {
+            var slot = hand.GetAvailableSlot();
+            slot.SetCardReference(card);
+            cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, this is not Bot, null);
+        }
     }
 
     public void CollectCards(List<Card> cards)
@@ -32,7 +45,7 @@ public abstract class User : MonoBehaviour
             _collectedCards.Add(card.GetConfig());
         }
         
-        cardAnimator.MoveCardsToTarget(cards, transform);
+        cardAnimator.OnCardsCollected(cards, transform);
     }
 
     public bool IsHandEmpty()
@@ -43,6 +56,7 @@ public abstract class User : MonoBehaviour
     public virtual void OnCardPlayed(Card card)
     {
         Cards.Remove(card);
+        hand.EmptySlotByCard(card);
         cardAnimator.AnimateSelectedCard(card, cardTarget.position, true,() =>
         {
             GameController.Instance.AppendCardsOnTable(card);
