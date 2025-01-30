@@ -13,7 +13,6 @@ namespace Helpers
         private static Dictionary<CardSuit, CardSpriteContainer> _cardsDictionary;
         private static List<CardConfig> _rewardedCards;
         
-        public static readonly int CardCountPoint = 3;
         private void Awake()
         {
             _cardsDictionary = new Dictionary<CardSuit, CardSpriteContainer>();
@@ -138,5 +137,12 @@ namespace Helpers
         BotTurn,
         Outcome,
         
+    }
+
+    public enum BotType
+    {
+        Easy,
+        Medium,
+        Hard
     }
 }

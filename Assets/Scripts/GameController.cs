@@ -23,6 +23,8 @@ public class GameController : MonoBehaviour
     private List<Card> _cardsOnTable = new List<Card>();
     private GameStateTypes _lastOutcomeCallerType;
 
+    public static event Action<bool> OnGameFinished;
+
     public static GameController Instance
     {
         get
@@ -48,11 +50,19 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void StartGame(BotType bot)
     {
         poolController.Initialize();
         cardTapHandler.Initialize();
         cardTapHandler.InjectPlayer(GetUser(false) as Player);
+
+        foreach (var user in users)
+        {
+            if (user is Bot)
+            {
+                ((Bot)user).SetBotStrategy(bot);
+            }
+        }
         
         BuildDeck();
         
@@ -141,8 +151,15 @@ public class GameController : MonoBehaviour
     
     public void ChangeState(IGameState newState)
     {
-        _currentState = newState;
-        _currentState.EnterState();
+        if (IsGameFinished())
+        {
+            OnGameFinished?.Invoke(users.IsPlayerWinner());
+        }
+        else
+        {
+            _currentState = newState;
+            _currentState.EnterState();
+        }
     }
 
     public List<User> GetAllUsers()

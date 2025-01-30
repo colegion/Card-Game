@@ -12,6 +12,7 @@ namespace Helpers
 
         private void OnDisable()
         {
+            if(_inputActions == null) return;
             _inputActions.Gameplay.Tap.performed -= OnTapPerformed;
             _inputActions.Disable();
         }

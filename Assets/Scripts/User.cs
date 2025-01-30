@@ -65,6 +65,11 @@ public abstract class User : MonoBehaviour
 
         return total;
     }
+
+    public List<CardConfig> GetCollectedCards()
+    {
+        return _collectedCards;
+    }
     
     public bool IsHandEmpty()
     {
