@@ -17,6 +17,8 @@ public abstract class User : MonoBehaviour
     
     private List<CardConfig> _collectedCards = new List<CardConfig>();
 
+    public event Action<int, int> OnCollectedCardsUpdated; 
+
     public void InjectUserState(IGameState state)
     {
         if (UserState != null) return;
@@ -48,10 +50,22 @@ public abstract class User : MonoBehaviour
         
         cardAnimator.OnCardsCollected(cards, transform, () =>
         {
+            OnCollectedCardsUpdated?.Invoke(_collectedCards.Count, GetTotalGatheredPoints());
             onComplete?.Invoke();
         });
     }
 
+    private int GetTotalGatheredPoints()
+    {
+        var total = 0;
+        foreach (var card in _collectedCards)
+        {
+            total += card.point;
+        }
+
+        return total;
+    }
+    
     public bool IsHandEmpty()
     {
         return Cards.Count == 0;

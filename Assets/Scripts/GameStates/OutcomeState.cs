@@ -18,12 +18,10 @@ public class OutcomeState : IGameState
 
         if (cardsOnTable.Count <= 1)
         {
-            Debug.Log("Not sufficient cards on table");
             ExitState();
         }
         else
         {
-            Debug.Log("sufficient cards on table");
             if (AreLastTwoCardsSame(cardsOnTable) || IsLastCardJack(cardsOnTable[^1]))
             {
                 var user = GameController.Instance.GetUser(GameController.Instance.GetLastOutcomeCallerType() ==
@@ -51,8 +49,6 @@ public class OutcomeState : IGameState
 
     private bool IsLastCardJack(Card card)
     {
-        if(card.IsJackCard())
-            Debug.Log("last card is jack");
         return card.IsJackCard();
     }
 

@@ -167,6 +167,11 @@ public class GameController : MonoBehaviour
         _lastOutcomeCallerType = type;
     }
 
+    public bool IsGameFinished()
+    {
+        return _deck.Count == 0;
+    }
+
     public GameStateTypes GetLastOutcomeCallerType()
     {
         return _lastOutcomeCallerType;
