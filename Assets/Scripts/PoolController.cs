@@ -43,6 +43,9 @@ public class PoolController : MonoBehaviour
 
     public void ReturnPooledObject(IPoolable poolObject)
     {
+        var poolGo = poolObject.GameObject(); 
+        poolGo.transform.SetParent(transform);
+        poolGo.transform.localPosition = Vector3.zero;
         _gamePool.ReturnToPool(poolObject.GetPoolableType(), poolObject);
     }
 }

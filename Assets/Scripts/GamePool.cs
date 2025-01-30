@@ -37,7 +37,6 @@ public class GamePool
     {
         if (!_pools.ContainsKey(type))
             _pools[type] = new Queue<IPoolable>();
-
         poolObject.OnReturnPool();
         _pools[type].Enqueue(poolObject);
     }

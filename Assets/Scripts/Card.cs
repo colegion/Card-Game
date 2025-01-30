@@ -32,6 +32,7 @@ public class Card : MonoBehaviour, IPoolable
         
         cardFace.sprite = Utilities.GetCardSprite(_cardConfig.cardSuit, _cardConfig.cardValue);
         cardValue.text = (int)_cardConfig.cardValue < (int)CardValue.Jack ? $"{(int)_cardConfig.cardValue}" : "";
+        
         _points = Utilities.GetCardPoint(config);
     }
 
@@ -83,5 +84,10 @@ public class Card : MonoBehaviour, IPoolable
     public PoolableTypes GetPoolableType()
     {
         return _type;
+    }
+
+    public GameObject GameObject()
+    {
+        return gameObject;
     }
 }

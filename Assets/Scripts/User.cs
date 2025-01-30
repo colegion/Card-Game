@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -9,7 +10,7 @@ public abstract class User : MonoBehaviour
 {
     [SerializeField] protected CardAnimator cardAnimator;
     [SerializeField] private Hand hand;
-    [SerializeField] private Transform cardTarget;
+    [SerializeField] private Table table;
     
     protected List<Card> Cards = new List<Card>();
     protected IGameState UserState;
@@ -38,14 +39,17 @@ public abstract class User : MonoBehaviour
         }
     }
 
-    public void CollectCards(List<Card> cards)
+    public void CollectCards(List<Card> cards, Action onComplete)
     {
         foreach (var card in cards)
         {
             _collectedCards.Add(card.GetConfig());
         }
         
-        cardAnimator.OnCardsCollected(cards, transform);
+        cardAnimator.OnCardsCollected(cards, transform, () =>
+        {
+            onComplete?.Invoke();
+        });
     }
 
     public bool IsHandEmpty()
@@ -57,9 +61,9 @@ public abstract class User : MonoBehaviour
     {
         Cards.Remove(card);
         hand.EmptySlotByCard(card);
-        cardAnimator.AnimateSelectedCard(card, cardTarget.position, true,() =>
+        GameController.Instance.AppendCardsOnTable(card);
+        cardAnimator.AnimateSelectedCard(card, table.GetCardTarget(), true,() =>
         {
-            GameController.Instance.AppendCardsOnTable(card);
             UserState.ExitState();
         });
     }

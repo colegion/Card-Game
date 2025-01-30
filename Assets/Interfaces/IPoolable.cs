@@ -1,4 +1,5 @@
 using Helpers;
+using UnityEngine;
 
 namespace Interfaces
 {
@@ -8,5 +9,6 @@ namespace Interfaces
         public void OnFetchFromPool();
         public void OnReturnPool();
         public PoolableTypes GetPoolableType();
+        public GameObject GameObject();
     }
 }

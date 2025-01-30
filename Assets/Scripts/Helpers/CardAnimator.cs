@@ -16,22 +16,24 @@ namespace Helpers
             });
         }
 
-        public void OnCardsCollected(List<Card> cards, Transform target)
+        public void OnCardsCollected(List<Card> cards, Transform target, Action onComplete)
         {
             Sequence sequence = DOTween.Sequence();
 
             foreach (var card in cards)
             {
-                sequence.Append(card.transform.DOMove(target.position, 0.3f).SetEase(Ease.Linear));
-                sequence.AppendInterval(0.15f);
+                sequence.Append(card.transform.DOMove(target.position, 0.1f).SetEase(Ease.Linear));
+                sequence.AppendInterval(0.03f);
             }
             
-            sequence.OnComplete(() =>
+            sequence.AppendCallback(() =>
             {
                 foreach (var card in cards)
                 {
                     GameController.Instance.ReturnObjectToPool(card);
                 }
+                
+                onComplete?.Invoke();
             });
         }
 

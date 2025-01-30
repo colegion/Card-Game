@@ -42,9 +42,8 @@ public class CardDistributionState : IGameState
             var card = GameController.Instance.GetCard();
             card.ConfigureSelf(config, i < CardAmount - 1);
             GameController.Instance.RemoveCardFromDeck(config);
-
-            sequence.AppendInterval(CardAnimationDelay)
-                .AppendCallback(() => GameController.Instance.AppendCardsOnTable(card));
+            GameController.Instance.AppendCardsOnTable(card);
+            sequence.AppendInterval(CardAnimationDelay);
         }
     }
 

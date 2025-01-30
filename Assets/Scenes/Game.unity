@@ -868,7 +868,7 @@ Transform:
   m_GameObject: {fileID: 1913340085}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalPosition: {x: 0, y: 12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1386,6 +1386,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1951504895132364200, guid: c989732e550d94f43a398c3a094c3af8,
+        type: 3}
+      propertyPath: yOffset
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 3162074720433649871, guid: c989732e550d94f43a398c3a094c3af8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1514,6 +1519,11 @@ PrefabInstance:
       propertyPath: hand
       value: 
       objectReference: {fileID: 883436728}
+    - target: {fileID: 8985496266023395397, guid: 03c28cd67cc38b0459397d8c3b3d237f,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 176579653}
     - target: {fileID: 8985496266023395397, guid: 03c28cd67cc38b0459397d8c3b3d237f,
         type: 3}
       propertyPath: cardAnimator
@@ -1783,6 +1793,11 @@ PrefabInstance:
       propertyPath: hand
       value: 
       objectReference: {fileID: 1485178049}
+    - target: {fileID: 7743354139080080631, guid: 4b9f05072831d2741a35497d4339219f,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 176579653}
     - target: {fileID: 7743354139080080631, guid: 4b9f05072831d2741a35497d4339219f,
         type: 3}
       propertyPath: cardAnimator

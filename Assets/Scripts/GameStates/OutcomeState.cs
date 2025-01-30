@@ -18,19 +18,26 @@ public class OutcomeState : IGameState
 
         if (cardsOnTable.Count <= 1)
         {
+            Debug.Log("Not sufficient cards on table");
             ExitState();
         }
         else
         {
+            Debug.Log("sufficient cards on table");
             if (AreLastTwoCardsSame(cardsOnTable) || IsLastCardJack(cardsOnTable[^1]))
             {
                 var user = GameController.Instance.GetUser(GameController.Instance.GetLastOutcomeCallerType() ==
                                                            GameStateTypes.BotTurn);
-                user.CollectCards(cardsOnTable);
-                GameController.Instance.ClearOnTableCards();
+                user.CollectCards(cardsOnTable, () =>
+                {
+                    GameController.Instance.ClearOnTableCards();
+                    ExitState();
+                });
             }
-            
-            DOVirtual.DelayedCall(1.3f, ExitState);
+            else
+            {
+                ExitState();
+            }
         }
     }
 
@@ -38,11 +45,14 @@ public class OutcomeState : IGameState
     {
         var lastCard = cards[^1].GetConfig();
         var secondLastCard = cards[^2].GetConfig();
+        Debug.Log($"Last two cards: {lastCard.cardValue} {lastCard.cardSuit} and {secondLastCard.cardValue} {secondLastCard.cardSuit}");
         return lastCard.Equals(secondLastCard);
     }
 
     private bool IsLastCardJack(Card card)
     {
+        if(card.IsJackCard())
+            Debug.Log("last card is jack");
         return card.IsJackCard();
     }
 

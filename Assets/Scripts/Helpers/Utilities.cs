@@ -94,17 +94,7 @@ namespace Helpers
 
         public bool Equals(CardConfig other)
         {
-            return cardSuit == other.cardSuit && cardValue == other.cardValue && point == other.point;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is CardConfig other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine((int)cardSuit, (int)cardValue, point);
+            return cardValue == other.cardValue;
         }
     }
 
