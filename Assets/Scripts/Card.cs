@@ -12,7 +12,7 @@ public class Card : MonoBehaviour, IPoolable
     [SerializeField] private GameObject cardBg;
     [SerializeField] private SpriteRenderer cardFace;
     [SerializeField] private TextMesh cardValue;
-    [SerializeField] private Collider2D cardCollider;
+    [SerializeField] private Collider cardCollider;
     
     private CardConfig _cardConfig;
     private PoolableTypes _type;

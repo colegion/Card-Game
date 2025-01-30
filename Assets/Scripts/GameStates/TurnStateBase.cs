@@ -10,6 +10,7 @@ public abstract class TurnStateBase : IGameState
 
     public void EnterState()
     {
+        Debug.Log("entered turn state");
         if (User == null)
             User = GetUser();
 

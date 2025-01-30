@@ -9,7 +9,7 @@ namespace BotStrategy
         
         public void InjectBot(Bot bot)
         {
-            if (bot != null) return;
+            if (_bot != null) return;
             _bot = bot;
         }
 

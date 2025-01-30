@@ -30,6 +30,7 @@ namespace Helpers
 
         private void OnTapPerformed(InputAction.CallbackContext context)
         {
+            Debug.Log("tap performed");
             Vector2 screenPosition = Mouse.current.position.ReadValue();
             
             if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)

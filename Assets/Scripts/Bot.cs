@@ -10,6 +10,7 @@ public class Bot : User
     
     public override void OnTurnStart()
     {
+        _currentStrategy.InjectBot(this);
         _currentStrategy.Play();
     }
 
