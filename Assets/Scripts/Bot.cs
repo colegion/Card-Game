@@ -12,8 +12,8 @@ public class Bot : User
     private static readonly Dictionary<BotType, Func<IBotStrategy>> StrategyFactory = new()
     {
         { BotType.Easy, () => new EasyBot() },
-        { BotType.Medium, () => new EasyBot() },
-        { BotType.Hard, () => new EasyBot() }
+        { BotType.Medium, () => new MediumBot() },
+        { BotType.Hard, () => new HardBot() }
     };
 
     public void SetBotStrategy(BotType type)
