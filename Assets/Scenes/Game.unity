@@ -1300,7 +1300,7 @@ PrefabInstance:
     - target: {fileID: 5976152443705815458, guid: 03c28cd67cc38b0459397d8c3b3d237f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.5
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 5976152443705815458, guid: 03c28cd67cc38b0459397d8c3b3d237f,
         type: 3}
@@ -1504,6 +1504,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MainCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5916963137754840693, guid: 927e7e3b663413a4c821ee57ca507f8a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5916963137754840693, guid: 927e7e3b663413a4c821ee57ca507f8a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 345
       objectReference: {fileID: 0}
     - target: {fileID: 7040971558350750673, guid: 927e7e3b663413a4c821ee57ca507f8a,
         type: 3}
@@ -1737,7 +1747,7 @@ PrefabInstance:
     - target: {fileID: 7172477475734924965, guid: 4b9f05072831d2741a35497d4339219f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7172477475734924965, guid: 4b9f05072831d2741a35497d4339219f,
         type: 3}

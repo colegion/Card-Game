@@ -184,8 +184,12 @@ public class GameController : MonoBehaviour
         _lastOutcomeCallerType = type;
     }
 
-    public bool IsGameFinished()
+    private bool IsGameFinished()
     {
+        foreach (var user in users)
+        {
+            if (!user.IsHandEmpty()) return false;
+        }
         return _deck.Count == 0;
     }
 

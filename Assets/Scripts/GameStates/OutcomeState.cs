@@ -15,28 +15,39 @@ public class OutcomeState : IGameState
     private void DecideOutcomeIfPossible()
     {
         var cardsOnTable = GameController.Instance.GetCardsOnTable();
-
         if (cardsOnTable.Count <= 1)
         {
             ExitState();
+            return;
         }
-        else
+
+        var lastCallerType = GameController.Instance.GetLastOutcomeCallerType();
+        var user = GameController.Instance.GetUser(lastCallerType == GameStateTypes.BotTurn);
+        
+        if (cardsOnTable.Count == 2 && AreLastTwoCardsSame(cardsOnTable))
         {
-            if (AreLastTwoCardsSame(cardsOnTable) || IsLastCardJack(cardsOnTable[^1]))
-            {
-                var user = GameController.Instance.GetUser(GameController.Instance.GetLastOutcomeCallerType() ==
-                                                           GameStateTypes.BotTurn);
-                user.CollectCards(cardsOnTable, () =>
-                {
-                    GameController.Instance.ClearOnTableCards();
-                    ExitState();
-                });
-            }
-            else
-            {
-                ExitState();
-            }
+            Debug.Log("pişti");
+            user.IncrementPistiCount();
+            CollectCardsAndExit(user, cardsOnTable);
+            return;
         }
+        
+        if (AreLastTwoCardsSame(cardsOnTable) || IsLastCardJack(cardsOnTable[^1]))
+        {
+            CollectCardsAndExit(user, cardsOnTable);
+            return;
+        }
+
+        ExitState();
+    }
+    
+    private void CollectCardsAndExit(User user, List<Card> cardsOnTable)
+    {
+        user.CollectCards(cardsOnTable, () =>
+        {
+            GameController.Instance.ClearOnTableCards();
+            ExitState();
+        });
     }
 
     private bool AreLastTwoCardsSame(List<Card> cards)

@@ -16,6 +16,7 @@ public abstract class User : MonoBehaviour
     protected IGameState UserState;
     
     private List<CardConfig> _collectedCards = new List<CardConfig>();
+    private int _pistiCount;
 
     public event Action<int, int> OnCollectedCardsUpdated; 
 
@@ -63,12 +64,19 @@ public abstract class User : MonoBehaviour
             total += card.point;
         }
 
+        total += Utilities.PistiPoint * _pistiCount;
+        
         return total;
     }
 
     public List<CardConfig> GetCollectedCards()
     {
         return _collectedCards;
+    }
+
+    public void IncrementPistiCount()
+    {
+        _pistiCount++;
     }
     
     public bool IsHandEmpty()
