@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +10,10 @@ namespace Helpers
         [SerializeField] private User user;
         [SerializeField] private TextMeshProUGUI totalCardCountField;
         [SerializeField] private TextMeshProUGUI totalPointField;
+
+        private int _previousCollectedCount;
+        private int _previousPoint;
+        
         private void OnEnable()
         {
             AddListeners();
@@ -21,9 +26,29 @@ namespace Helpers
 
         private void HandleOnCollectedCardsUpdated(int collectedCardCount, int points)
         {
-            totalCardCountField.text = $"Collected: {collectedCardCount}";
-            totalPointField.text = $"Points: {points}";
+            // Animate collected card count
+            DOTween.To(() => _previousCollectedCount, x =>
+            {
+                _previousCollectedCount = x;
+                totalCardCountField.text = $"Collected: {x}";
+            }, collectedCardCount, 0.5f).SetEase(Ease.OutQuad);
+
+            totalCardCountField.transform.DOScale(1.2f, 0.2f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() => totalCardCountField.transform.DOScale(1f, 0.2f));
+
+            // Animate points
+            DOTween.To(() => _previousPoint, x =>
+            {
+                _previousPoint = x;
+                totalPointField.text = $"Points: {x}";
+            }, points, 0.5f).SetEase(Ease.OutQuad);
+
+            totalPointField.transform.DOScale(1.2f, 0.2f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() => totalPointField.transform.DOScale(1f, 0.2f));
         }
+
 
         private void AddListeners()
         {
