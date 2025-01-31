@@ -24,7 +24,6 @@ namespace Helpers
                     break;
             }
         }
-
         
         public void AnimateSelectedCard(Card card, Vector3 cardTarget, bool forceDisable, Action onComplete)
         {

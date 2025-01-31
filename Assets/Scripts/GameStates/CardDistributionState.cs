@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class CardDistributionState : IGameState
 {
-    private const float CardAnimationDelay = 0.1f;
+    private const float CardAnimationDelay = 0.25f;
     private const int CardAmount = 4;
     private bool _initialDistributionCompleted;
     
@@ -29,8 +29,10 @@ public class CardDistributionState : IGameState
         if (!_initialDistributionCompleted)
         {
             _initialDistributionCompleted = true;
-            DistributeTableCards();
-            DistributeUserCards(ExitState);
+            DistributeTableCards(() =>
+            {
+                DistributeUserCards(ExitState);
+            });
         }
         else
         {
@@ -38,7 +40,7 @@ public class CardDistributionState : IGameState
         }
     }
 
-    private void DistributeTableCards()
+    private void DistributeTableCards(Action onComplete)
     {
         Sequence sequence = DOTween.Sequence();
 
@@ -48,9 +50,18 @@ public class CardDistributionState : IGameState
             var card = GameController.Instance.GetCard();
             card.ConfigureSelf(config, i < CardAmount - 1);
             GameController.Instance.RemoveCardFromDeck(config);
-            GameController.Instance.AppendCardsOnTable(card);
+            sequence.AppendCallback(() =>
+            {
+                GameController.Instance.AppendCardsOnTable(card);
+            });
+            
             sequence.AppendInterval(CardAnimationDelay);
         }
+
+        sequence.OnComplete(() =>
+        {
+            onComplete?.Invoke();
+        });
     }
 
     private void DistributeUserCards(Action onComplete)
