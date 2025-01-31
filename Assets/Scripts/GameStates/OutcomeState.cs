@@ -26,7 +26,6 @@ public class OutcomeState : IGameState
         
         if (cardsOnTable.Count == 2 && AreLastTwoCardsSame(cardsOnTable))
         {
-            Debug.Log("pişti");
             user.IncrementPistiCount();
             CollectCardsAndExit(user, cardsOnTable);
             return;

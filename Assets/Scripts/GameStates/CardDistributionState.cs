@@ -13,7 +13,14 @@ public class CardDistributionState : IGameState
     
     public void EnterState()
     {
-        DistributeCards();
+        if (GameController.Instance.CheckIfGameFinished())
+        {
+            return;
+        }
+        else
+        {
+            DistributeCards();
+        }
     }
     
     private void DistributeCards()

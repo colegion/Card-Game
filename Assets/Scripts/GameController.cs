@@ -18,8 +18,8 @@ public class GameController : MonoBehaviour
     private static Dictionary<GameStateTypes, IGameState> _gameStates = new Dictionary<GameStateTypes, IGameState>();
 
     private IGameState _currentState;
-    
-    private List<CardConfig> _deck;
+
+    private Deck _deck;
     private List<Card> _cardsOnTable = new List<Card>();
     private GameStateTypes _lastOutcomeCallerType;
 
@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour
             }
         }
         
-        BuildDeck();
+        _deck = new Deck();
         
         _gameStates = new Dictionary<GameStateTypes, IGameState>
         {
@@ -76,28 +76,6 @@ public class GameController : MonoBehaviour
 
         _currentState = _gameStates[GameStateTypes.CardDistribution];
         _currentState.EnterState();
-    }
-
-    private void BuildDeck()
-    {
-        _deck = new List<CardConfig>();
-        foreach (CardSuit suit in Enum.GetValues(typeof(CardSuit)))
-        {
-            if(suit == CardSuit.Null) continue;
-            foreach (CardValue value in Enum.GetValues(typeof(CardValue)))
-            {
-                if (value == CardValue.Null) continue;
-                var tempConfig = new CardConfig()
-                {
-                    cardSuit = suit,
-                    cardValue = value
-                };
-                
-                _deck.Add(tempConfig);
-            }
-        }
-        
-        _deck.Shuffle();
     }
 
     public Card GetCard()
@@ -112,9 +90,7 @@ public class GameController : MonoBehaviour
 
     public CardConfig GetRandomConfig()
     {
-        var randomIndex = Random.Range(0, _deck.Count);
-        var tempConfig = _deck[randomIndex];
-        return tempConfig;
+        return _deck.GetRandomConfig();
     }
 
     public void AppendCardsOnTable(Card card)
@@ -146,20 +122,13 @@ public class GameController : MonoBehaviour
 
     public void RemoveCardFromDeck(CardConfig config)
     {
-        _deck.Remove(config);
+        _deck.RemoveCardFromDeck(config);
     }
     
     public void ChangeState(IGameState newState)
     {
-        if (IsGameFinished())
-        {
-            OnGameFinished?.Invoke(users.IsPlayerWinner());
-        }
-        else
-        {
             _currentState = newState;
             _currentState.EnterState();
-        }
     }
 
     public List<User> GetAllUsers()
@@ -184,13 +153,22 @@ public class GameController : MonoBehaviour
         _lastOutcomeCallerType = type;
     }
 
-    private bool IsGameFinished()
+    public bool CheckIfGameFinished()
     {
+        bool gameEnded = true;
         foreach (var user in users)
         {
-            if (!user.IsHandEmpty()) return false;
+            if (!user.IsHandEmpty()) gameEnded = false;
         }
-        return _deck.Count == 0;
+
+        gameEnded = gameEnded && _deck.IsDeckEmpty;
+        if (gameEnded)
+        {
+            OnGameFinished?.Invoke(users.IsPlayerWinner());
+            return true;
+        }
+
+        return false;
     }
 
     public GameStateTypes GetLastOutcomeCallerType()
