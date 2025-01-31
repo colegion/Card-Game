@@ -11,21 +11,21 @@ public abstract class User : MonoBehaviour
     [SerializeField] protected CardAnimator cardAnimator;
     [SerializeField] private Hand hand;
     [SerializeField] private Table table;
-    
+
     protected List<Card> Cards = new List<Card>();
     protected IGameState UserState;
-    
+
     private List<CardConfig> _collectedCards = new List<CardConfig>();
     private int _pistiCount;
 
-    public event Action<int, int> OnCollectedCardsUpdated; 
+    public event Action<int, int> OnCollectedCardsUpdated;
 
     public void InjectUserState(IGameState state)
     {
         if (UserState != null) return;
         UserState = state;
     }
-    
+
     public void SetCards(List<Card> cards)
     {
         Cards = cards;
@@ -43,52 +43,39 @@ public abstract class User : MonoBehaviour
             var card = Cards[i];
             var slot = hand.GetAvailableSlot();
             slot.SetCardReference(card);
-        
+
             bool isPlayer = this is not Bot;
             bool animationCompleted = false;
-        
-            cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer, () => 
-            {
-                animationCompleted = true;
-            });
-        
+
+            cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer,
+                () => { animationCompleted = true; });
+
             yield return new WaitUntil(() => animationCompleted);
             yield return new WaitForSeconds(0.1f);
         }
-        
+
         onComplete?.Invoke();
     }
 
-    public void CollectCards(List<Card> cards, bool isPisti, Action onComplete)
+    public void CollectCards(List<Card> cards, CollectType type, Action onComplete)
     {
         foreach (var card in cards)
         {
             _collectedCards.Add(card.GetConfig());
         }
 
-        if (isPisti)
-        {
-            cardAnimator.OnUserGotPisti(cards, transform, () =>
-            {
-                TriggerCollectedCardsAnimation(cards, onComplete);
-            });
-        }
-        else
-        {
-            TriggerCollectedCardsAnimation(cards, onComplete);
-        }
-        
-       
+        TriggerCollectedCardsAnimation(cards, type, onComplete);
     }
 
-    private void TriggerCollectedCardsAnimation(List<Card> cards, Action onComplete)
+    private void TriggerCollectedCardsAnimation(List<Card> cards, CollectType type, Action onComplete)
     {
-        cardAnimator.OnCardsCollected(cards, transform, () =>
+        cardAnimator.DecideAnimationToUse(cards, transform, type, () =>
         {
             OnCollectedCardsUpdated?.Invoke(_collectedCards.Count, GetTotalGatheredPoints());
             onComplete?.Invoke();
         });
     }
+
 
     private int GetTotalGatheredPoints()
     {
@@ -99,7 +86,7 @@ public abstract class User : MonoBehaviour
         }
 
         total += Utilities.PistiPoint * _pistiCount;
-        
+
         return total;
     }
 
@@ -112,22 +99,19 @@ public abstract class User : MonoBehaviour
     {
         _pistiCount++;
     }
-    
+
     public bool IsHandEmpty()
     {
         return Cards.Count == 0;
     }
-    
+
     public virtual void OnCardPlayed(Card card)
     {
         Cards.Remove(card);
         hand.EmptySlotByCard(card);
         GameController.Instance.AppendCardsOnTable(card);
-        cardAnimator.AnimateSelectedCard(card, table.GetCardTarget(), true,() =>
-        {
-            UserState.ExitState();
-        });
+        cardAnimator.AnimateSelectedCard(card, table.GetCardTarget(), true, () => { UserState.ExitState(); });
     }
-    
+
     public abstract void OnTurnStart();
 }

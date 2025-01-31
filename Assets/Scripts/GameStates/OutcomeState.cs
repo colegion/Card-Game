@@ -7,8 +7,11 @@ using UnityEngine;
 
 public class OutcomeState : IGameState
 {
+    private GameRules _gameRules;
     public void EnterState()
     {
+        if (_gameRules == null)
+            _gameRules = new GameRules();
         DecideOutcomeIfPossible();
     }
 
@@ -23,43 +26,25 @@ public class OutcomeState : IGameState
 
         var lastCallerType = GameController.Instance.GetLastOutcomeCallerType();
         var user = GameController.Instance.GetUser(lastCallerType == GameStateTypes.BotTurn);
-        
-        if (cardsOnTable.Count == 2 && AreLastTwoCardsSame(cardsOnTable))
-        {
-            user.IncrementPistiCount();
-            CollectCardsAndExit(user, cardsOnTable, true);
-            return;
-        }
-        
-        if (AreLastTwoCardsSame(cardsOnTable) || IsLastCardJack(cardsOnTable[^1]))
-        {
-            CollectCardsAndExit(user, cardsOnTable, false);
-            return;
-        }
 
-        ExitState();
+        if (_gameRules.IsMoveCollectable(cardsOnTable, out CollectType type))
+        {
+            if(type == CollectType.Pisti) user.IncrementPistiCount();
+            CollectCardsAndExit(user, cardsOnTable, type);
+        }
+        else
+        {
+            ExitState();
+        }
     }
     
-    private void CollectCardsAndExit(User user, List<Card> cardsOnTable, bool isPisti)
+    private void CollectCardsAndExit(User user, List<Card> cardsOnTable, CollectType type)
     {
-        user.CollectCards(cardsOnTable, isPisti, () =>
+        user.CollectCards(cardsOnTable, type, () =>
         {
             GameController.Instance.ClearOnTableCards();
             ExitState();
         });
-    }
-
-    private bool AreLastTwoCardsSame(List<Card> cards)
-    {
-        var lastCard = cards[^1].GetConfig();
-        var secondLastCard = cards[^2].GetConfig();
-        Debug.Log($"Last two cards: {lastCard.cardValue} {lastCard.cardSuit} and {secondLastCard.cardValue} {secondLastCard.cardSuit}");
-        return lastCard.Equals(secondLastCard);
-    }
-
-    private bool IsLastCardJack(Card card)
-    {
-        return card.IsJackCard();
     }
 
     public void ExitState()

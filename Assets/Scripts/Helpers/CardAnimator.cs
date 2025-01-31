@@ -8,6 +8,20 @@ namespace Helpers
 {
     public class CardAnimator : MonoBehaviour
     {
+
+        public void DecideAnimationToUse(List<Card> cards, Transform target, CollectType type, Action onComplete)
+        {
+            switch (type)
+            {
+                case CollectType.Pisti:
+                    OnUserGotPisti(cards, target, onComplete);
+                    break;
+                default:
+                    OnCardsCollected(cards, target, onComplete);
+                    break;
+            }
+        }
+        
         public void AnimateSelectedCard(Card card, Vector3 cardTarget, bool forceDisable, Action onComplete)
         {
             if(forceDisable) card.DisableBackground();
@@ -17,7 +31,7 @@ namespace Helpers
             });
         }
 
-        public void OnCardsCollected(List<Card> cards, Transform target, Action onComplete)
+        private void OnCardsCollected(List<Card> cards, Transform target, Action onComplete)
         {
             Sequence sequence = DOTween.Sequence();
 
@@ -38,7 +52,7 @@ namespace Helpers
             });
         }
 
-        public void OnUserGotPisti(List<Card> cards, Transform target, Action onComplete)
+        private void OnUserGotPisti(List<Card> cards, Transform target, Action onComplete)
         {
             Sequence sequence = DOTween.Sequence();
 

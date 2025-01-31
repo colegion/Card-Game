@@ -146,4 +146,12 @@ namespace Helpers
         Medium,
         Hard
     }
+
+    public enum CollectType
+    {
+        None,
+        IdenticalCard,
+        Jack,
+        Pisti
+    }
 }
