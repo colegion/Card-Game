@@ -59,13 +59,30 @@ public abstract class User : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    public void CollectCards(List<Card> cards, Action onComplete)
+    public void CollectCards(List<Card> cards, bool isPisti, Action onComplete)
     {
         foreach (var card in cards)
         {
             _collectedCards.Add(card.GetConfig());
         }
+
+        if (isPisti)
+        {
+            cardAnimator.OnUserGotPisti(cards, transform, () =>
+            {
+                TriggerCollectedCardsAnimation(cards, onComplete);
+            });
+        }
+        else
+        {
+            TriggerCollectedCardsAnimation(cards, onComplete);
+        }
         
+       
+    }
+
+    private void TriggerCollectedCardsAnimation(List<Card> cards, Action onComplete)
+    {
         cardAnimator.OnCardsCollected(cards, transform, () =>
         {
             OnCollectedCardsUpdated?.Invoke(_collectedCards.Count, GetTotalGatheredPoints());

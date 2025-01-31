@@ -27,22 +27,22 @@ public class OutcomeState : IGameState
         if (cardsOnTable.Count == 2 && AreLastTwoCardsSame(cardsOnTable))
         {
             user.IncrementPistiCount();
-            CollectCardsAndExit(user, cardsOnTable);
+            CollectCardsAndExit(user, cardsOnTable, true);
             return;
         }
         
         if (AreLastTwoCardsSame(cardsOnTable) || IsLastCardJack(cardsOnTable[^1]))
         {
-            CollectCardsAndExit(user, cardsOnTable);
+            CollectCardsAndExit(user, cardsOnTable, false);
             return;
         }
 
         ExitState();
     }
     
-    private void CollectCardsAndExit(User user, List<Card> cardsOnTable)
+    private void CollectCardsAndExit(User user, List<Card> cardsOnTable, bool isPisti)
     {
-        user.CollectCards(cardsOnTable, () =>
+        user.CollectCards(cardsOnTable, isPisti, () =>
         {
             GameController.Instance.ClearOnTableCards();
             ExitState();
