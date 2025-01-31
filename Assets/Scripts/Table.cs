@@ -7,9 +7,11 @@ public class Table : MonoBehaviour
 {
     [SerializeField] private Transform[] cardTransforms;
     [SerializeField] private float yOffset;
-
+    
     private int _transformIndex;
     private int _totalCounter;
+    
+    private List<Card> _cardsOnTable = new List<Card>();
     
     public Vector3 GetCardTarget()
     {
@@ -22,8 +24,31 @@ public class Table : MonoBehaviour
         }
         return target.position + new Vector3(0, yOffset * _totalCounter, 0);
     }
+    
+    public void AppendCardsOnTable(Card card)
+    {
+        if (_cardsOnTable.Contains(card))
+        {
+            Debug.LogError("Duplicate card!");
+        }
+        else
+        {
+            _cardsOnTable.Add(card);
+        }
+    }
+    
+    public List<Card> GetCardsOnTable()
+    {
+        return _cardsOnTable;
+    }
+    
+    public void ClearOnTableCards()
+    {
+        ResetTransformCounter();
+        _cardsOnTable.Clear();
+    }
 
-    public void ResetTransformCounter()
+    private void ResetTransformCounter()
     {
         _totalCounter = 0;
     }

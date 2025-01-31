@@ -13,14 +13,13 @@ public class GameController : MonoBehaviour
     [SerializeField] private CardAnimator cardAnimator;
     [SerializeField] private Table table;
     [SerializeField] private List<User> users;
-    
+
     private static GameController _instance;
     private static Dictionary<GameStateTypes, IGameState> _gameStates = new Dictionary<GameStateTypes, IGameState>();
 
     private IGameState _currentState;
 
     private Deck _deck;
-    private List<Card> _cardsOnTable = new List<Card>();
     private GameStateTypes _lastOutcomeCallerType;
 
     public static event Action<bool> OnGameFinished;
@@ -33,6 +32,7 @@ public class GameController : MonoBehaviour
             {
                 Debug.LogError("GameController is not initialized! Ensure there is a GameController in the scene.");
             }
+
             return _instance;
         }
     }
@@ -63,9 +63,9 @@ public class GameController : MonoBehaviour
                 ((Bot)user).SetBotStrategy(bot);
             }
         }
-        
+
         _deck = new Deck();
-        
+
         _gameStates = new Dictionary<GameStateTypes, IGameState>
         {
             { GameStateTypes.CardDistribution, new CardDistributionState() },
@@ -95,40 +95,29 @@ public class GameController : MonoBehaviour
 
     public void AppendCardsOnTable(Card card)
     {
-        if (_cardsOnTable.Contains(card))
-        {
-            Debug.LogError("Duplicate card!");
-        }
-        else
-        {
-            _cardsOnTable.Add(card);
-            cardAnimator.AnimateSelectedCard(card, table.GetCardTarget(), false, () =>
-            {
-                
-            });
-        }
+        table.AppendCardsOnTable(card);
+        cardAnimator.AnimateSelectedCard(card, table.GetCardTarget(), false, () => { });
     }
 
     public List<Card> GetCardsOnTable()
     {
-        return _cardsOnTable;
+        return table.GetCardsOnTable();
     }
 
     public void ClearOnTableCards()
     {
-        table.ResetTransformCounter();
-        _cardsOnTable.Clear();
+        table.ClearOnTableCards();
     }
 
     public void RemoveCardFromDeck(CardConfig config)
     {
         _deck.RemoveCardFromDeck(config);
     }
-    
+
     public void ChangeState(IGameState newState)
     {
-            _currentState = newState;
-            _currentState.EnterState();
+        _currentState = newState;
+        _currentState.EnterState();
     }
 
     public List<User> GetAllUsers()
@@ -175,7 +164,7 @@ public class GameController : MonoBehaviour
     {
         return _lastOutcomeCallerType;
     }
-    
+
     public IGameState GetStateByType(GameStateTypes type)
     {
         return _gameStates[type];

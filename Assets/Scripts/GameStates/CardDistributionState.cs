@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -27,16 +28,14 @@ public class CardDistributionState : IGameState
     {
         if (!_initialDistributionCompleted)
         {
-            DistributeTableCards();
-            DistributeUserCards();
             _initialDistributionCompleted = true;
+            DistributeTableCards();
+            DistributeUserCards(ExitState);
         }
         else
         {
-            DistributeUserCards();
+            DistributeUserCards(ExitState);
         }
-
-        DOVirtual.DelayedCall(2.6f, ExitState); 
     }
 
     private void DistributeTableCards()
@@ -54,7 +53,7 @@ public class CardDistributionState : IGameState
         }
     }
 
-    private void DistributeUserCards()
+    private void DistributeUserCards(Action onComplete)
     {
         var users = GameController.Instance.GetAllUsers();
 
@@ -72,6 +71,10 @@ public class CardDistributionState : IGameState
             }
             
             user.SetCards(cards);
+            user.ReceiveCards(() =>
+            {
+                onComplete?.Invoke();
+            });
         }
     }
 
