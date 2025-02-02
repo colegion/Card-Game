@@ -97,7 +97,7 @@ public class CardDistributionState : IGameState
                 var config = GameController.Instance.GetRandomConfig();
                 if (config.cardValue == CardValue.Null)
                 {
-                    Debug.LogError("Deck is out of cards!"); // Check if deck runs out
+                    Debug.LogError("Deck is out of cards!");
                     yield break;
                 }
 

@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        _deck = new Deck(); // Make sure this fully resets the deck
+        _deck = new Deck();
         Debug.Log($"New deck initialized with {_deck.GetCont()} cards");
 
         table.ResetAttributes();

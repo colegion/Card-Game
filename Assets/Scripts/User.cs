@@ -35,28 +35,9 @@ public abstract class User : MonoBehaviour
     {
         var slot = hand.GetAvailableSlot();
         slot.SetCardReference(card);
-
         bool isPlayer = this is not Bot;
-        bool animationCompleted = false;
-
         cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer,
             () => onComplete?.Invoke());
-        //StartCoroutine(ReceiveSingleCardCoroutine(card, onComplete));
-    }
-
-    private IEnumerator ReceiveSingleCardCoroutine(Card card, Action onComplete)
-    {
-        var slot = hand.GetAvailableSlot();
-        slot.SetCardReference(card);
-
-        bool isPlayer = this is not Bot;
-        bool animationCompleted = false;
-
-        cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer,
-            () => animationCompleted = true);
-
-        yield return new WaitUntil(() => animationCompleted);
-        onComplete?.Invoke();
     }
 
     public void CollectCards(List<Card> cards, CollectType type, Action onComplete)
