@@ -165,6 +165,14 @@ public class GameController : MonoBehaviour
     {
         return _lastOutcomeCallerType;
     }
+    
+    public void CheckRemainingCardAmount()
+    {
+        if (_deck.IsDeckEmpty)
+        {
+            table.ToggleCardVisual(false);
+        }
+    }
 
     public IGameState GetStateByType(GameStateTypes type)
     {

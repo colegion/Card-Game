@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Helpers;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject blackishPanel;
     [SerializeField] private TextMeshProUGUI endGameField;
+    [SerializeField] private TextMeshProUGUI roundField;
     [SerializeField] private Button startGameButton;
     [SerializeField] private TMP_Dropdown botTypeDropdown; 
 
@@ -65,15 +67,44 @@ public class UIController : MonoBehaviour
         _selectedBotType = (BotType)botTypeDropdown.value;
     }
 
+    private void AnimateRoundField(int round, Action onComplete)
+    {
+        roundField.text = $"Round {round}";
+        roundField.transform.localScale = Vector3.one; // Reset scale
+
+        roundField.gameObject.SetActive(true);
+        // Flashy animation sequence
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.Append(roundField.transform.DOScale(1.5f, 0.15f) // Scale up quickly
+            .SetEase(Ease.OutBack));
+
+        sequence.Join(roundField.DOColor(Color.yellow, 0.15f)); // Change color to yellow
+
+        sequence.Append(roundField.transform.DOScale(1.0f, 0.35f) // Scale down smoothly
+            .SetEase(Ease.InOutQuad));
+
+        sequence.Join(roundField.DOColor(Color.white, 0.35f)); // Back to normal color
+
+        sequence.OnComplete(() =>
+        {
+            roundField.gameObject.SetActive(false);
+            onComplete?.Invoke();
+        });
+    }
+
+
     private void AddListeners()
     {
         startGameButton.onClick.AddListener(RequestGame);
         GameController.OnGameFinished += HandleOnGameFinished;
+        CardDistributionState.OnRoundDistributed += AnimateRoundField;
     }
 
     private void RemoveListeners()
     {
         startGameButton.onClick.RemoveListener(RequestGame);
         GameController.OnGameFinished -= HandleOnGameFinished;
+        CardDistributionState.OnRoundDistributed -= AnimateRoundField;
     }
 }

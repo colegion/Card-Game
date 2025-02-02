@@ -7,6 +7,7 @@ public class Table : MonoBehaviour
 {
     [SerializeField] private Transform[] cardTransforms;
     [SerializeField] private float yOffset;
+    [SerializeField] private GameObject dummyCardVisual;
     
     private int _transformIndex;
     private int _totalCounter;
@@ -51,6 +52,11 @@ public class Table : MonoBehaviour
     private void ResetTransformCounter()
     {
         _totalCounter = 0;
+    }
+
+    public void ToggleCardVisual(bool toggle)
+    {
+        dummyCardVisual.gameObject.SetActive(toggle);
     }
 
 }

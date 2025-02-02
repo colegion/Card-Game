@@ -11,6 +11,8 @@ public class CardDistributionState : IGameState
     private const float CardAnimationDelay = 0.25f;
     private const int CardAmount = 4;
     private bool _initialDistributionCompleted;
+    private int _roundIndex = 0;
+    public static event Action<int, Action> OnRoundDistributed; 
     
     public void EnterState()
     {
@@ -99,7 +101,13 @@ public class CardDistributionState : IGameState
 
     public void ExitState()
     {
-        var playerTurn = GameController.Instance.GetStateByType(GameStateTypes.PlayerTurn);
-        GameController.Instance.ChangeState(playerTurn);
+        _roundIndex++;
+        GameController.Instance.CheckRemainingCardAmount();
+        OnRoundDistributed?.Invoke(_roundIndex, () =>
+        {
+            var playerTurn = GameController.Instance.GetStateByType(GameStateTypes.PlayerTurn);
+            GameController.Instance.ChangeState(playerTurn);
+        });
+        
     }
 }
