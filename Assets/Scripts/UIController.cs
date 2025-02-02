@@ -95,22 +95,12 @@ public class UIController : MonoBehaviour
         infoField.gameObject.SetActive(true);
 
         Sequence sequence = DOTween.Sequence();
-
-        // Make text bigger & change to gold color
         sequence.Append(infoField.transform.DOScale(2f, 0.2f).SetEase(Ease.OutBack));
         sequence.Join(infoField.DOColor(Color.yellow, 0.2f));
-
-        // Short hold
         sequence.AppendInterval(0.2f);
-
-        // Shrink back & flash white
         sequence.Append(infoField.transform.DOScale(1.0f, 0.2f).SetEase(Ease.InOutQuad));
         sequence.Join(infoField.DOColor(Color.white, 0.2f));
-
-        // UI shake effect
         sequence.AppendCallback(() => infoField.transform.DOShakePosition(0.3f, 10f, 20));
-
-        // Hide text after effect
         sequence.AppendInterval(0.3f);
         sequence.AppendCallback(() => infoField.gameObject.SetActive(false));
     }
