@@ -70,29 +70,22 @@ public class UIController : MonoBehaviour
     private void AnimateRoundField(int round, Action onComplete)
     {
         roundField.text = $"Round {round}";
-        roundField.transform.localScale = Vector3.one; // Reset scale
-
+        roundField.transform.localScale = Vector3.one;
         roundField.gameObject.SetActive(true);
-        // Flashy animation sequence
         Sequence sequence = DOTween.Sequence();
 
-        sequence.Append(roundField.transform.DOScale(1.5f, 0.15f) // Scale up quickly
+        sequence.Append(roundField.transform.DOScale(1.5f, 0.15f)
             .SetEase(Ease.OutBack));
-
-        sequence.Join(roundField.DOColor(Color.yellow, 0.15f)); // Change color to yellow
-
-        sequence.Append(roundField.transform.DOScale(1.0f, 0.35f) // Scale down smoothly
+        sequence.Join(roundField.DOColor(Color.yellow, 0.15f));
+        sequence.Append(roundField.transform.DOScale(1.0f, 0.35f)
             .SetEase(Ease.InOutQuad));
-
-        sequence.Join(roundField.DOColor(Color.white, 0.35f)); // Back to normal color
-
+        sequence.Join(roundField.DOColor(Color.white, 0.35f));
         sequence.OnComplete(() =>
         {
             roundField.gameObject.SetActive(false);
             onComplete?.Invoke();
         });
     }
-
 
     private void AddListeners()
     {

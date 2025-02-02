@@ -56,7 +56,7 @@ public class Card : MonoBehaviour, IPoolable
     {
         _type = PoolableTypes.Card;
         visuals.gameObject.SetActive(false);
-        cardCollider.enabled = false;
+        ToggleInteractable(false);
     }
 
     public void OnFetchFromPool()
@@ -73,6 +73,7 @@ public class Card : MonoBehaviour, IPoolable
         cardFace.sprite = null;
         cardValue.text = "";
         cardBg.gameObject.SetActive(true);
+        visuals.gameObject.SetActive(false);
         ToggleInteractable(false);
     }
 
