@@ -5,13 +5,14 @@ using DG.Tweening;
 using Helpers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject blackishPanel;
     [SerializeField] private TextMeshProUGUI endGameField;
-    [SerializeField] private TextMeshProUGUI roundField;
+    [SerializeField] private TextMeshProUGUI infoField;
     [SerializeField] private Button startGameButton;
     [SerializeField] private TMP_Dropdown botTypeDropdown; 
 
@@ -67,37 +68,67 @@ public class UIController : MonoBehaviour
         _selectedBotType = (BotType)botTypeDropdown.value;
     }
 
-    private void AnimateRoundField(int round, Action onComplete)
+    private void AnimateOnNewRound(int round, Action onComplete)
     {
-        roundField.text = $"Round {round}";
-        roundField.transform.localScale = Vector3.one;
-        roundField.gameObject.SetActive(true);
+        infoField.text = $"Round {round}";
+        infoField.transform.localScale = Vector3.one;
+        infoField.gameObject.SetActive(true);
         Sequence sequence = DOTween.Sequence();
 
-        sequence.Append(roundField.transform.DOScale(1.5f, 0.15f)
+        sequence.Append(infoField.transform.DOScale(1.5f, 0.15f)
             .SetEase(Ease.OutBack));
-        sequence.Join(roundField.DOColor(Color.yellow, 0.15f));
-        sequence.Append(roundField.transform.DOScale(1.0f, 0.35f)
+        sequence.Join(infoField.DOColor(Color.yellow, 0.15f));
+        sequence.Append(infoField.transform.DOScale(1.0f, 0.35f)
             .SetEase(Ease.InOutQuad));
-        sequence.Join(roundField.DOColor(Color.white, 0.35f));
+        sequence.Join(infoField.DOColor(Color.white, 0.35f));
         sequence.OnComplete(() =>
         {
-            roundField.gameObject.SetActive(false);
+            infoField.gameObject.SetActive(false);
             onComplete?.Invoke();
         });
     }
+
+    private void AnimateOnPisti()
+    {
+        infoField.text = "PİŞTİ!";
+        infoField.transform.localScale = Vector3.one;
+        infoField.gameObject.SetActive(true);
+
+        Sequence sequence = DOTween.Sequence();
+
+        // Make text bigger & change to gold color
+        sequence.Append(infoField.transform.DOScale(2f, 0.2f).SetEase(Ease.OutBack));
+        sequence.Join(infoField.DOColor(Color.yellow, 0.2f));
+
+        // Short hold
+        sequence.AppendInterval(0.2f);
+
+        // Shrink back & flash white
+        sequence.Append(infoField.transform.DOScale(1.0f, 0.2f).SetEase(Ease.InOutQuad));
+        sequence.Join(infoField.DOColor(Color.white, 0.2f));
+
+        // UI shake effect
+        sequence.AppendCallback(() => infoField.transform.DOShakePosition(0.3f, 10f, 20));
+
+        // Hide text after effect
+        sequence.AppendInterval(0.3f);
+        sequence.AppendCallback(() => infoField.gameObject.SetActive(false));
+    }
+
 
     private void AddListeners()
     {
         startGameButton.onClick.AddListener(RequestGame);
         GameController.OnGameFinished += HandleOnGameFinished;
-        CardDistributionState.OnRoundDistributed += AnimateRoundField;
+        CardDistributionState.OnRoundDistributed += AnimateOnNewRound;
+        CardAnimator.OnPisti += AnimateOnPisti;
     }
 
     private void RemoveListeners()
     {
         startGameButton.onClick.RemoveListener(RequestGame);
         GameController.OnGameFinished -= HandleOnGameFinished;
-        CardDistributionState.OnRoundDistributed -= AnimateRoundField;
+        CardDistributionState.OnRoundDistributed -= AnimateOnNewRound;
+        CardAnimator.OnPisti -= AnimateOnPisti;
     }
 }

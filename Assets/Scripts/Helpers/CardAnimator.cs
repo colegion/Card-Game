@@ -8,7 +8,7 @@ namespace Helpers
 {
     public class CardAnimator : MonoBehaviour
     {
-
+        public static event Action OnPisti;
         public void DecideAnimationToUse(List<Card> cards, Transform target, CollectType type, Action onComplete)
         {
             switch (type)
@@ -87,6 +87,7 @@ namespace Helpers
 
         private void OnUserGotPisti(List<Card> cards, Transform target, Action onComplete)
         {
+            OnPisti?.Invoke();
             Sequence sequence = DOTween.Sequence();
 
             foreach (var card in cards)
