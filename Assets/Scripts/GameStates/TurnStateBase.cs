@@ -31,6 +31,11 @@ public abstract class TurnStateBase : IGameState
         GameController.Instance.ChangeState(outcomeState);
     }
 
+    public void ResetAttributes()
+    {
+        User = null;
+    }
+
     private void ExitImmediately()
     {
         var distributionState = GameController.Instance.GetStateByType(GameStateTypes.CardDistribution);

@@ -63,4 +63,9 @@ public class OutcomeState : IGameState
         
         GameController.Instance.ChangeState(GameController.Instance.GetStateByType(newCaller));
     }
+
+    public void ResetAttributes()
+    {
+        
+    }
 }

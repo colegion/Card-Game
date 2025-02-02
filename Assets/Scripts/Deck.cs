@@ -48,5 +48,10 @@ public class Deck
         _deck.Remove(config);
     }
 
+    public int GetCont()
+    {
+        return _deck.Count;
+    }
+
     public bool IsDeckEmpty => _deck.Count == 0;
 }

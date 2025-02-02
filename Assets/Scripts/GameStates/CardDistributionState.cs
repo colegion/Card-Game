@@ -45,26 +45,37 @@ public class CardDistributionState : IGameState
     private void DistributeTableCards(Action onComplete)
     {
         Sequence sequence = DOTween.Sequence();
+        Debug.Log("Distributing table cards...");
 
         for (int i = 0; i < CardAmount; i++)
         {
             var config = GameController.Instance.GetRandomConfig();
+            if (config.cardValue == CardValue.Null)
+            {
+                Debug.LogError("Deck is empty while distributing table cards!");
+                break;
+            }
+
             var card = GameController.Instance.GetCard();
             card.ConfigureSelf(config, i < CardAmount - 1);
             GameController.Instance.RemoveCardFromDeck(config);
+            Debug.Log($"Added {config.cardValue} to table.");
+
             sequence.AppendCallback(() =>
             {
                 GameController.Instance.AppendCardsOnTable(card);
             });
-            
+
             sequence.AppendInterval(CardAnimationDelay);
         }
 
         sequence.OnComplete(() =>
         {
+            Debug.Log("Table cards distributed.");
             onComplete?.Invoke();
         });
     }
+
 
     private void DistributeUserCards(Action onComplete)
     {
@@ -74,6 +85,8 @@ public class CardDistributionState : IGameState
 
     private IEnumerator DistributeUserCardsCoroutine(List<User> users, int cardAmount, Action onComplete)
     {
+        Debug.Log($"Starting user card distribution. Expected cards per user: {cardAmount}");
+    
         for (int i = 0; i < cardAmount; i++)
         {
             for (int j = 0; j < users.Count; j++)
@@ -82,10 +95,18 @@ public class CardDistributionState : IGameState
                 var faceDown = user is not Player;
 
                 var config = GameController.Instance.GetRandomConfig();
+                if (config.cardValue == CardValue.Null)
+                {
+                    Debug.LogError("Deck is out of cards!"); // Check if deck runs out
+                    yield break;
+                }
+
                 var card = GameController.Instance.GetCard();
                 card.ConfigureSelf(config, faceDown);
                 GameController.Instance.RemoveCardFromDeck(config);
                 user.AddCardToHand(card);
+
+                Debug.Log($"Distributed card {config.cardValue} to {user.GetType()}");
 
                 bool animationCompleted = false;
                 user.ReceiveSingleCard(card, () => animationCompleted = true);
@@ -95,8 +116,10 @@ public class CardDistributionState : IGameState
             }
         }
 
+        Debug.Log("User card distribution complete.");
         onComplete?.Invoke();
     }
+
 
 
     public void ExitState()
@@ -109,5 +132,11 @@ public class CardDistributionState : IGameState
             GameController.Instance.ChangeState(playerTurn);
         });
         
+    }
+
+    public void ResetAttributes()
+    {
+        _initialDistributionCompleted = false;
+        _roundIndex = 0;
     }
 }

@@ -33,7 +33,15 @@ public abstract class User : MonoBehaviour
     
     public void ReceiveSingleCard(Card card, Action onComplete)
     {
-        StartCoroutine(ReceiveSingleCardCoroutine(card, onComplete));
+        var slot = hand.GetAvailableSlot();
+        slot.SetCardReference(card);
+
+        bool isPlayer = this is not Bot;
+        bool animationCompleted = false;
+
+        cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer,
+            () => onComplete?.Invoke());
+        //StartCoroutine(ReceiveSingleCardCoroutine(card, onComplete));
     }
 
     private IEnumerator ReceiveSingleCardCoroutine(Card card, Action onComplete)
@@ -69,8 +77,7 @@ public abstract class User : MonoBehaviour
             onComplete?.Invoke();
         });
     }
-
-
+    
     private int GetTotalGatheredPoints()
     {
         var total = 0;
@@ -99,8 +106,17 @@ public abstract class User : MonoBehaviour
         return Cards.Count == 0;
     }
 
+    public void ResetAttributes()
+    {
+        Cards.Clear();
+        _pistiCount = 0;
+        _collectedCards.Clear();
+        OnCollectedCardsUpdated?.Invoke(0, 0);
+    }
+
     public virtual void OnCardPlayed(Card card)
     {
+        card.ToggleInteractable(false);
         Cards.Remove(card);
         hand.EmptySlotByCard(card);
         GameController.Instance.AppendCardsOnTable(card);

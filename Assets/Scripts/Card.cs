@@ -62,6 +62,7 @@ public class Card : MonoBehaviour, IPoolable
     public void OnFetchFromPool()
     {
         visuals.gameObject.SetActive(true);
+        cardBg.gameObject.SetActive(true);
     }
 
     public void OnReturnPool()
@@ -70,6 +71,7 @@ public class Card : MonoBehaviour, IPoolable
         _cardConfig.cardValue = CardValue.Null;
         _cardConfig.point = 0;
         _points = 0;
+        transform.localScale = Vector3.one;
         cardFace.sprite = null;
         cardValue.text = "";
         cardBg.gameObject.SetActive(true);

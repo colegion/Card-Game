@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
 
     private Deck _deck;
     private GameStateTypes _lastOutcomeCallerType;
+    private bool _isInitialized;
 
     public static event Action<bool> OnGameFinished;
 
@@ -53,31 +54,48 @@ public class GameController : MonoBehaviour
 
     public void StartGame(BotType bot)
     {
-        poolController.Initialize();
-        cardTapHandler.Initialize();
-        cardTapHandler.InjectPlayer(GetUser(false) as Player);
+        if (!_isInitialized)
+        {
+            poolController.Initialize();
+            cardTapHandler.Initialize();
+            cardTapHandler.InjectPlayer(GetUser(false) as Player);
+        
+            _gameStates = new Dictionary<GameStateTypes, IGameState>
+            {
+                { GameStateTypes.CardDistribution, new CardDistributionState() },
+                { GameStateTypes.BotTurn, new BotTurnState() },
+                { GameStateTypes.PlayerTurn, new PlayerTurnState() },
+                { GameStateTypes.Outcome, new OutcomeState() }
+            };
+        
+            _isInitialized = true;
+        }
 
         foreach (var user in users)
         {
+            user.ResetAttributes();
             if (user is Bot)
             {
                 ((Bot)user).SetBotStrategy(bot);
             }
         }
 
-        _deck = new Deck();
+        _deck = new Deck(); // Make sure this fully resets the deck
+        Debug.Log($"New deck initialized with {_deck.GetCont()} cards");
 
-        _gameStates = new Dictionary<GameStateTypes, IGameState>
+        table.ResetAttributes();
+    
+        foreach (var pair in _gameStates)
         {
-            { GameStateTypes.CardDistribution, new CardDistributionState() },
-            { GameStateTypes.BotTurn, new BotTurnState() },
-            { GameStateTypes.PlayerTurn, new PlayerTurnState() },
-            { GameStateTypes.Outcome, new OutcomeState() }
-        };
+            pair.Value.ResetAttributes();
+        }
+
+        Debug.Log("All states and users reset.");
 
         _currentState = _gameStates[GameStateTypes.CardDistribution];
         _currentState.EnterState();
     }
+
 
     public Card GetCard()
     {

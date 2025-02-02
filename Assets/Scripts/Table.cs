@@ -59,4 +59,17 @@ public class Table : MonoBehaviour
         dummyCardVisual.gameObject.SetActive(toggle);
     }
 
+    public void ResetAttributes()
+    {
+        ToggleCardVisual(true);
+        foreach (var card in _cardsOnTable)
+        {
+            GameController.Instance.ReturnObjectToPool(card);
+        }
+        
+        _cardsOnTable.Clear();
+        _totalCounter = 0;
+        _transformIndex = 0;
+    }
+
 }
