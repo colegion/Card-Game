@@ -67,27 +67,35 @@ public class CardDistributionState : IGameState
     private void DistributeUserCards(Action onComplete)
     {
         var users = GameController.Instance.GetAllUsers();
+        RoutineHelper.Instance.StartRoutine(DistributeUserCardsCoroutine(users, CardAmount, onComplete));
+    }
 
-        foreach (var user in users)
+    private IEnumerator DistributeUserCardsCoroutine(List<User> users, int cardAmount, Action onComplete)
+    {
+        for (int i = 0; i < cardAmount; i++)
         {
-            var faceDown = user is not Player;
-            var cards = new List<Card>();
-            for (int i = 0; i < CardAmount; i++) 
+            for (int j = 0; j < users.Count; j++)
             {
+                var user = users[j];
+                var faceDown = user is not Player;
+
                 var config = GameController.Instance.GetRandomConfig();
                 var card = GameController.Instance.GetCard();
                 card.ConfigureSelf(config, faceDown);
                 GameController.Instance.RemoveCardFromDeck(config);
-                cards.Add(card);
+                user.AddCardToHand(card);
+
+                bool animationCompleted = false;
+                user.ReceiveSingleCard(card, () => animationCompleted = true);
+
+                yield return new WaitUntil(() => animationCompleted);
+                yield return new WaitForSeconds(0.1f);
             }
-            
-            user.SetCards(cards);
-            user.ReceiveCards(() =>
-            {
-                onComplete?.Invoke();
-            });
         }
+
+        onComplete?.Invoke();
     }
+
 
     public void ExitState()
     {

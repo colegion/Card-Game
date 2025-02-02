@@ -26,34 +26,28 @@ public abstract class User : MonoBehaviour
         UserState = state;
     }
 
-    public void SetCards(List<Card> cards)
+    public void AddCardToHand(Card card)
     {
-        Cards = cards;
+        Cards.Add(card);
+    }
+    
+    public void ReceiveSingleCard(Card card, Action onComplete)
+    {
+        StartCoroutine(ReceiveSingleCardCoroutine(card, onComplete));
     }
 
-    public void ReceiveCards(Action onComplete)
+    private IEnumerator ReceiveSingleCardCoroutine(Card card, Action onComplete)
     {
-        StartCoroutine(ReceiveCardsCoroutine(onComplete));
-    }
+        var slot = hand.GetAvailableSlot();
+        slot.SetCardReference(card);
 
-    private IEnumerator ReceiveCardsCoroutine(Action onComplete)
-    {
-        for (int i = 0; i < Cards.Count; i++)
-        {
-            var card = Cards[i];
-            var slot = hand.GetAvailableSlot();
-            slot.SetCardReference(card);
+        bool isPlayer = this is not Bot;
+        bool animationCompleted = false;
 
-            bool isPlayer = this is not Bot;
-            bool animationCompleted = false;
+        cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer,
+            () => animationCompleted = true);
 
-            cardAnimator.AnimateSelectedCard(card, slot.GetTarget().position, isPlayer,
-                () => { animationCompleted = true; });
-
-            yield return new WaitUntil(() => animationCompleted);
-            yield return new WaitForSeconds(0.1f);
-        }
-
+        yield return new WaitUntil(() => animationCompleted);
         onComplete?.Invoke();
     }
 
