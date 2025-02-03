@@ -68,7 +68,12 @@ public class GameController : MonoBehaviour
                 { GameStateTypes.Outcome, new OutcomeState() }
             };
         
+            _deck = new Deck();
             _isInitialized = true;
+        }
+        else
+        {
+            _deck.RebuildDeck();
         }
 
         foreach (var user in users)
@@ -79,10 +84,7 @@ public class GameController : MonoBehaviour
                 ((Bot)user).SetBotStrategy(bot);
             }
         }
-
-        _deck = new Deck();
-        Debug.Log($"New deck initialized with {_deck.GetCont()} cards");
-
+        
         table.ResetAttributes();
     
         foreach (var pair in _gameStates)

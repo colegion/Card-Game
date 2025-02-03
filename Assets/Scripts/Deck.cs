@@ -8,8 +8,8 @@ using Random = UnityEngine.Random;
 public class Deck
 {
     private List<CardConfig> _deck;
-
-    public Deck()
+    private List<CardConfig> _garbageDeck = new List<CardConfig>();
+    public Deck() 
     {
         BuildDeck();
     }
@@ -34,8 +34,16 @@ public class Deck
                 _deck.Add(tempConfig);
             }
         }
-
+        
         _deck.Shuffle();
+    }
+
+    public void RebuildDeck()
+    {
+        _deck = new List<CardConfig>(_garbageDeck);
+        _garbageDeck.Clear();
+        _deck.Shuffle();
+        _removedCards.Clear();
     }
 
     public CardConfig GetRandomConfig()
@@ -45,15 +53,30 @@ public class Deck
         return tempConfig;
     }
 
+    private List<CardConfig> _removedCards = new List<CardConfig>();
     public void RemoveCardFromDeck(CardConfig config)
     {
-        _deck.Remove(config);
-    }
 
-    public int GetCont()
-    {
-        return _deck.Count;
+        foreach (var card in _removedCards)
+        {
+            if (card.cardValue == config.cardValue && card.cardSuit == config.cardSuit)
+            {
+                Debug.LogWarning("duplicate removal!!!!!!");
+            }
+        }
+        bool removed = _deck.RemoveAll(c => c.cardSuit == config.cardSuit && c.cardValue == config.cardValue) > 0;
+    
+        if (!removed)
+        {
+            Debug.LogError($"Attempted to remove {config.cardSuit} {config.cardValue} but it was not in the deck!");
+        }
+        else
+        {
+            _removedCards.Add(config);
+            _garbageDeck.Add(config);
+            Debug.Log($"Removed card from deck: {config.cardSuit} {config.cardValue}");
+        }
     }
-
+    
     public bool IsDeckEmpty => _deck.Count == 0;
 }

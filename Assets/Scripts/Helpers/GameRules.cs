@@ -7,15 +7,15 @@ namespace Helpers
     {
         public bool IsMoveCollectable(List<Card> cardsOnTable, out CollectType type)
         {
-            if (IsLastCardJack(cardsOnTable[^1]))
-            {
-                type = CollectType.Jack;
-                return true;
-            }
-
             if (AreLastTwoCardsSame(cardsOnTable) && cardsOnTable.Count == 2)
             {
                 type = CollectType.Pisti;
+                return true;
+            }
+            
+            if (IsLastCardJack(cardsOnTable[^1]))
+            {
+                type = CollectType.Jack;
                 return true;
             }
             
@@ -34,7 +34,6 @@ namespace Helpers
         {
             var lastCard = cards[^1].GetConfig();
             var secondLastCard = cards[^2].GetConfig();
-            Debug.Log($"Last two cards: {lastCard.cardValue} {lastCard.cardSuit} and {secondLastCard.cardValue} {secondLastCard.cardSuit}");
             return lastCard.Equals(secondLastCard);
         }
 

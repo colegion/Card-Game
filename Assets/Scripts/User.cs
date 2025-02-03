@@ -97,6 +97,7 @@ public abstract class User : MonoBehaviour
 
     public virtual void OnCardPlayed(Card card)
     {
+        Debug.Log($"Played card {card.GetConfig().cardValue} {card.GetConfig().cardSuit}");
         card.ToggleInteractable(false);
         Cards.Remove(card);
         hand.EmptySlotByCard(card);
