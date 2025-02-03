@@ -29,6 +29,8 @@ public class Deck
                     cardValue = value
                 };
 
+                tempConfig.point = Utilities.GetCardPoint(tempConfig);
+
                 _deck.Add(tempConfig);
             }
         }

@@ -21,7 +21,7 @@ namespace BotStrategy
             
             if (lastCard == null)
             {
-                PlayRandomCard(hand);
+                PlayRandomCardExceptJack(hand);
                 return;
             }
             
@@ -36,7 +36,7 @@ namespace BotStrategy
             
             if (TryPlayJack()) return;
             
-            PlayRandomCard(hand);
+            PlayRandomCardExceptJack(hand);
         }
 
         private bool TryPlayJack()
@@ -52,11 +52,16 @@ namespace BotStrategy
             return false;
         }
 
-        private void PlayRandomCard(List<Card> hand)
+        private void PlayRandomCardExceptJack(List<Card> hand)
         {
             var cardToPlay = GetRandomCard(hand);
             if (cardToPlay != null)
             {
+                while (cardToPlay.IsJackCard())
+                {
+                    cardToPlay = GetRandomCard(hand);
+                }
+                
                 _bot.OnCardPlayed(cardToPlay);
             }
         }

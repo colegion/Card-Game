@@ -33,7 +33,7 @@ public class Card : MonoBehaviour, IPoolable
         cardFace.sprite = Utilities.GetCardSprite(_cardConfig.cardSuit, _cardConfig.cardValue);
         cardValue.text = (int)_cardConfig.cardValue < (int)CardValue.Jack ? $"{(int)_cardConfig.cardValue}" : "";
         
-        _points = Utilities.GetCardPoint(config);
+        //_points = Utilities.GetCardPoint(config);
     }
 
     public void DisableBackground()
@@ -43,7 +43,7 @@ public class Card : MonoBehaviour, IPoolable
 
     public CardConfig GetConfig()
     {
-        _cardConfig.point = _points;
+        //_cardConfig.point = _points;
         return _cardConfig;
     }
 
@@ -70,7 +70,7 @@ public class Card : MonoBehaviour, IPoolable
         _cardConfig.cardSuit = CardSuit.Null;
         _cardConfig.cardValue = CardValue.Null;
         _cardConfig.point = 0;
-        _points = 0;
+        //_points = 0;
         transform.localScale = Vector3.one;
         cardFace.sprite = null;
         cardValue.text = "";
