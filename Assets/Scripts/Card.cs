@@ -87,4 +87,9 @@ public class Card : MonoBehaviour, IPoolable
     {
         return gameObject;
     }
+
+    public SpriteRenderer GetCardFace()
+    {
+        return cardFace;
+    }
 }

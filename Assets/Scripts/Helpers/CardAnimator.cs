@@ -58,10 +58,11 @@ namespace Helpers
         private void OnJackCollected(List<Card> cards, Transform target, Action onComplete)
         {
             Sequence sequence = DOTween.Sequence();
-            Card jackCard = cards[^1]; 
+            Card jackCard = cards[^1];
+            var face = jackCard.GetCardFace();
             
             sequence.Append(jackCard.transform.DOScale(1.6f, 0.2f).SetEase(Ease.OutBack));
-
+            sequence.Join(face.DOColor(new Color(1f, 1f, 1f, 190 / 255f), 0.3f).SetEase(Ease.OutBack));
             foreach (var card in cards)
             {
                 if (card == jackCard) continue;
@@ -76,6 +77,8 @@ namespace Helpers
             sequence.AppendCallback(() =>
             {
                 Camera.main.transform.DOShakePosition(0.2f, 0.25f, 15);
+                face.DOColor(new Color(1f, 1f, 1f, 150 / 255f), 0.3f).SetEase(Ease.OutBack);
+                face.color = Color.white;
                 foreach (var card in cards)
                 {
                     GameController.Instance.ReturnObjectToPool(card);
